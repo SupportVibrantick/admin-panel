@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 use App\Services\PayoutService;
@@ -349,5 +350,98 @@ class MLMUserController extends Controller
         return redirect()->back()->with('success', "🗑️ {$count} user(s) permanently deleted");
     }
 
-  
+  public function dashboard()
+{
+    // 1. Holding Tank (Pending Approvals)
+    $pendingApprovals = \App\Models\MLMTree::whereNull('parent_id')
+        ->where('position', 'none')
+        ->whereHas('mlmUser', function ($q) {
+            $q->where('is_verified', true)
+              ->where('is_active', true)
+              ->where('user_name', '!=', 'Founder01');
+        })->count();
+
+    // 2. Revenue & Orders (सेफ वर्जन - अगर Order मॉडल न हो तो 0)
+    $totalRevenue = 0;
+    $totalOrders = 0;
+    $completedOrders = 0;
+    
+    if (class_exists(\App\Models\Order::class) && Schema::hasTable('orders')) {
+        $totalOrders = \App\Models\Order::count();
+        
+        // Status कॉलम चेक करें
+        if (Schema::hasColumn('orders', 'status')) {
+            if (Schema::hasColumn('orders', 'total_amount')) {
+                $totalRevenue = \App\Models\Order::where('status', 'completed')->sum('total_amount');
+            } elseif (Schema::hasColumn('orders', 'grand_total')) {
+                $totalRevenue = \App\Models\Order::where('status', 'completed')->sum('grand_total');
+            }
+            $completedOrders = \App\Models\Order::where('status', 'completed')->count();
+        }
+    }
+
+    // 3. Users Stats
+    $activeUsers = \App\Models\MlmUser::where('is_active', true)->where('is_deleted', false)->count();
+    $newUsersToday = \App\Models\MlmUser::whereDate('created_at', today())->count();
+    
+    $customerCount = 0;
+    $directSellers = 0;
+    $inactiveCount = \App\Models\MlmUser::where('is_active', false)->where('is_deleted', false)->count();
+    
+    if (Schema::hasColumn('mlm_users', 'membership_type')) {
+        $customerCount = \App\Models\MlmUser::where('membership_type', 'CUSTOMER')->where('is_deleted', false)->count();
+        $directSellers = \App\Models\MlmUser::where('membership_type', 'DIRECT_SELLER')->where('is_active', true)->where('is_deleted', false)->count();
+    }
+
+    // 4. Payouts (सेफ वर्जन)
+    $totalPayout = 0;
+    if (Schema::hasTable('payout_balances')) {
+        if (Schema::hasColumn('payout_balances', 'total_payout')) {
+            $totalPayout = \App\Models\PayoutBalance::sum('total_payout');
+        } elseif (Schema::hasColumn('payout_balances', 'amount')) {
+            $totalPayout = \App\Models\PayoutBalance::sum('amount');
+        } elseif (Schema::hasColumn('payout_balances', 'net_amount')) {
+            $totalPayout = \App\Models\PayoutBalance::sum('net_amount');
+        } elseif (Schema::hasColumn('payout_balances', 'total_amount')) {
+            $totalPayout = \App\Models\PayoutBalance::sum('total_amount');
+        }
+    }
+
+    // 5. Network Tree Nodes
+    $leftNodes = \App\Models\MLMTree::where('position', 'left')->count();
+    $rightNodes = \App\Models\MLMTree::where('position', 'right')->count();
+    $totalNodes = $leftNodes + $rightNodes;
+
+    // 6. Inventory Status
+    $totalProducts = 0;
+    $outOfStock = 0;
+    $lowStock = 0;
+    $inventoryPercentage = 0;
+    
+    if (Schema::hasTable('products')) {
+        $totalProducts = \App\Models\Product::count();
+        $outOfStock = \App\Models\Product::where('stock', '<=', 0)->count();
+        $lowStock = \App\Models\Product::where('stock', '>', 0)->where('stock', '<=', 10)->count();
+        $inStock = $totalProducts - $outOfStock;
+        $inventoryPercentage = $totalProducts > 0 ? round(($inStock / $totalProducts) * 100) : 0;
+    }
+
+    // 7. Bonus Value
+    $leftTeamVolume = 0; 
+    $rightTeamVolume = 0;
+    $leftCarryVolume = 0;
+    $rightCarryVolume = 0;
+    $totalBV = $leftTeamVolume + $rightTeamVolume;
+
+    $eligibleCount = $pendingApprovals;
+
+    return view('admin.pages.dashboard', compact(
+        'pendingApprovals', 'totalRevenue', 'totalOrders', 'completedOrders',
+        'activeUsers', 'newUsersToday', 'totalPayout', 'directSellers',
+        'eligibleCount', 'leftNodes', 'rightNodes', 'totalNodes',
+        'customerCount', 'inactiveCount', 'totalProducts', 'lowStock',
+        'outOfStock', 'inventoryPercentage', 'leftTeamVolume', 'rightTeamVolume',
+        'leftCarryVolume', 'rightCarryVolume', 'totalBV'
+    ));
+}
 }

@@ -133,11 +133,9 @@ Route::get('/', function () {
 // ALL THE ROUTES FOR BACKEND DASHBOARD
 
 
-Route::get('/dashboard', function () {
-    $users = \App\Models\User::all();
-    return view('admin.pages.dashboard', ['users' => $users]);
-})->middleware('auth')->name('dashboard');
-
+Route::get('/dashboard', [MLMUserController::class, 'dashboard'])
+    ->middleware('auth')
+    ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
 
