@@ -26,7 +26,15 @@
                     Swal.fire({ icon: 'success', title: 'Success!', text: '{{ session('success') }}', timer: 4000 });
                 </script>
             @endif
-
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
             <div class="card">
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -151,11 +159,11 @@
                                 <input type="text" name="quote" class="form-control" placeholder="Quote" required>
                             </div>
 
-                            <div class="col-col12">
+                            <div class="col-12">
                                 <label>Description <span class="text-danger">*</span></label>
                                 <textarea name="description" class="summernote" required></textarea>
                             </div>
-                            <div class="col-col12">
+                            <div class="col-12">
                                 <label>Benefits <span class="text-danger">*</span></label>
                                 <textarea name="benefits" class="summernote" required></textarea>
                             </div>
