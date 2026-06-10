@@ -94,6 +94,9 @@ class PermissionSeeder extends Seeder
 
         // Create Admin Role if it doesn't exist
         $adminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+        $userRole = Role::firstOrCreate(['name' => 'user', 'guard_name' => 'web']);
+        $mlmUserRole = Role::firstOrCreate(['name' => 'mlm_user', 'guard_name' => 'web']);
+        $seoManagerRole = Role::firstOrCreate(['name' => 'seo_manager', 'guard_name' => 'web']);
         
         // Assign all permissions to admin role
         $adminRole->syncPermissions(Permission::all());

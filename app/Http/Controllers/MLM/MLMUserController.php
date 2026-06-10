@@ -2,24 +2,25 @@
 
 namespace App\Http\Controllers\MLM;
 
+use \App\Models\MLMTree;
 use App\Http\Controllers\Controller;
 use App\Mail\MlmActivationMail;
 use App\Models\MlmUser;
-use App\Models\SpillingPreference;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\PayoutBalance;
+use App\Models\PayoutConfig;
 use App\Models\Product;
+use App\Models\SpillingPreference;
+use App\Services\PayoutService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
-
-use App\Services\PayoutService;
-use App\Models\PayoutConfig;
-use App\Models\PayoutBalance;
 
 class MLMUserController extends Controller
 {
@@ -48,7 +49,7 @@ class MLMUserController extends Controller
             'email' => 'required|email|max:255|unique:mlm_users,email',
             'phone' => 'required|digits:10|unique:mlm_users,phone',
             'password' => 'required|string|min:8|confirmed',
-            'commission_percentage' => 'required|in:10,12,14,16,18,20',
+            'commission_percentage' => 'nullable',
         ]);
 
         DB::beginTransaction();
@@ -78,7 +79,7 @@ class MLMUserController extends Controller
             ]);
 
             // 2. Create Tree Node → Holding Tank
-            \App\Models\MLMTree::create([
+            MLMTree::create([   
                 'mlm_user_id' => $mlmUser->id,
                 'parent_id' => null,
                 'position' => 'none',
@@ -241,7 +242,7 @@ class MLMUserController extends Controller
             'is_active' => 'nullable|boolean',
             'is_verified' => 'nullable|boolean',
             'password' => 'nullable|string|min:8|confirmed',
-            'commission_percentage' => 'sometimes|required|in:10,12,14,16,18,20',
+            'commission_percentage' => 'sometimes|nullable|in:10,12,14,16,18,20',
         ]);
 
         $mlmUser = MlmUser::findOrFail($id);
@@ -253,11 +254,12 @@ class MLMUserController extends Controller
             'phone' => $validated['phone'],
             'is_active' => $validated['is_active'] ?? $mlmUser->is_active,
             'is_verified' => $validated['is_verified'] ?? $mlmUser->is_verified,
+            'commission_percentage' => $validated['commission_percentage'],
         ];
 
-        if (isset($validated['commission_percentage'])) {
-            $updateData['commission_percentage'] = $validated['commission_percentage'];
-        }
+        // if (isset($validated['commission_percentage'])) {
+        //     $updateData['commission_percentage'] = $validated['commission_percentage'];
+        // }
 
         if (isset($validated['is_verified']) && $validated['is_verified'] && !$mlmUser->is_verified) {
             $updateData['verification_token'] = null;

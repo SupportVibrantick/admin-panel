@@ -1,6 +1,7 @@
 @extends('admin.layout.admin-master')
 @section('title', 'MLM Users | Continuity Care')
 
+
 @section('content')
     <div class="content-body">
         <div class="container-fluid">
@@ -22,48 +23,48 @@
             </div>
 
           <!-- ✅ Unified Alerts Section - ALL messages show here -->
-@if (session('success') || session('error') || session('email_warning') || $errors->any())
-    <div class="alert-container mb-3">
-        
-        {{-- Success Message --}}
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
+            @if (session('success') || session('error') || session('email_warning') || $errors->any())
+                <div class="alert-container mb-3">
+                    
+                    {{-- Success Message --}}
+                    @if (session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    @endif
 
-        {{-- Email Warning (Special Case) --}}
-        @if (session('email_warning'))
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('email_warning') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
+                    {{-- Email Warning (Special Case) --}}
+                    @if (session('email_warning'))
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('email_warning') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    @endif
 
-        {{-- General Error --}}
-        @if (session('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
+                    {{-- General Error --}}
+                    @if (session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    @endif
 
-        {{-- Validation Errors Summary --}}
-        @if ($errors->any())
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <h6 class="mb-2"><i class="bi bi-exclamation-octagon-fill me-2"></i>Validation Errors:</h6>
-                <ul class="mb-0 small">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
+                    {{-- Validation Errors Summary --}}
+                    @if ($errors->any())
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <h6 class="mb-2"><i class="bi bi-exclamation-octagon-fill me-2"></i>Validation Errors:</h6>
+                            <ul class="mb-0 small">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    @endif
 
-    </div>
-@endif
+                </div>
+            @endif
 
             <!-- Table -->
             <div class="row">
@@ -231,9 +232,8 @@
                                                             <div class="col-md-6 mb-3">
                                                                 <label class="form-label fw-bold">Commission % <span
                                                                         class="text-danger">*</span></label>
-                                                                <select name="commission_percentage"
-                                                                    class="select @error('commission_percentage') is-invalid @enderror"
-                                                                    required>
+                                                                <select name="commission_percentage" class="select @error('commission_percentage') is-invalid @enderror">
+                                                                    <option value="">Select Commission</option>
                                                                     @foreach ([10, 12, 14, 16, 18, 20] as $percent)
                                                                         @php
                                                                             $label =
@@ -328,9 +328,9 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="d-flex justify-content-center mt-3">
+                    {{-- <div class="d-flex justify-content-center mt-3">
                         {{ $users->links() }}
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>

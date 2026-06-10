@@ -68,7 +68,7 @@
                                         <h6 class="card-title mb-1 fw-bold">
                                             {{ $ref->first_name }} {{ $ref->last_name }}
                                         </h6>
-                                        <small class="text-muted d-block mb-3">@{{ $ref->user_name }}</small>
+                                        <small class="text-muted d-block mb-3">{{ $ref->user_name ?? 'N/A' }}</small>
                                         
                                         <!-- Mini Stats -->
                                         <div class="d-flex justify-content-center gap-2 mb-3">
@@ -99,7 +99,7 @@
                     
                     <!-- Pagination -->
                     <div class="mt-4">
-                        {{ $referrals->links() }}
+                       {{ $referrals->links('pagination::bootstrap-5') }}
                     </div>
                     
                 @else
