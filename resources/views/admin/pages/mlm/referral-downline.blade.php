@@ -190,7 +190,7 @@
 
                 <!-- Pagination -->
                 <div class="mt-3">
-                    {{ $downlines->links() }}
+                    {{ $downlines->links('pagination::bootstrap-5') }}
                 </div>
             </div>
         </div>

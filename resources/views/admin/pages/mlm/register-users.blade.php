@@ -65,12 +65,11 @@
 
                 </div>
             @endif
-
             <!-- Table -->
             <div class="row">
                 <div class="col-xl-12">
                     <div class="table-responsive">
-                        <table class="table table-bordered shadow-sm datatable">
+                        <table class="table table-bordered shadow-sm ">
                             <thead class="bg-light">
                                 <tr>
                                     <th>ID</th>
@@ -87,7 +86,7 @@
                             <tbody>
                                 @foreach ($users as $user)
                                     <tr>
-                                        <td>#{{ $user->id }}</td>
+                                        <td>{{ $users->firstItem() + $loop->index }}</td>
                                         <td>
                                             <strong>{{ $user->user_name }}</strong><br>
                                             <small class="text-muted">{{ $user->track_id }}</small>
@@ -117,12 +116,12 @@
                                         <!-- ✅ FIXED: Use direct commission_percentage field -->
                                         <td>
                                             @php
-                                                $commission = $user->commission_percentage ?? 10;
+                                                $commission = $user->commission_percentage;
                                                 $badgeColor = $commission == 20 ? 'success' : 'primary';
                                                 $amount = $commission == 20 ? 200 : 100;
                                             @endphp
                                             <span class="badge bg-{{ $badgeColor }}">
-                                                {{ $commission }}%
+                                                {{ $commission ? $commission . '%' : 'N/A' }} 
                                             </span>
                                             <br><small>₹{{ $amount }}/bottle</small>
                                         </td>
@@ -328,9 +327,9 @@
                             </tbody>
                         </table>
                     </div>
-                    {{-- <div class="d-flex justify-content-center mt-3">
-                        {{ $users->links() }}
-                    </div> --}}
+                    <div class="">
+                        {{ $users->links('pagination::bootstrap-5') }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -530,8 +529,7 @@
 
 @endsection
 
-@push('scripts')
-// ✅ Auto-open modal based on error type
+@push('scripts') 
 @php
     $hasRegisterErrors = $errors->has('sponsor_username') || $errors->has('user_name') || $errors->has('email') || $errors->has('phone') || $errors->has('password');
     $hasEditErrors = false; // Edit form errors usually don't redirect back with old input
