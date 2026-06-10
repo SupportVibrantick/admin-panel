@@ -1,6 +1,7 @@
 @extends('admin.layout.admin-master')
 @section('title', 'MLM Users | Continuity Care')
 
+
 @section('content')
     <div class="content-body">
         <div class="container-fluid">
@@ -327,9 +328,9 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="d-flex justify-content-center mt-3">
+                    {{-- <div class="d-flex justify-content-center mt-3">
                         {{ $users->links() }}
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>

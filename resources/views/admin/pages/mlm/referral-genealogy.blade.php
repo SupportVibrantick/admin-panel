@@ -99,7 +99,7 @@
                     
                     <!-- Pagination -->
                     <div class="mt-4">
-                        {{ $referrals->links() }}
+                       {{ $referrals->links('pagination::bootstrap-5') }}
                     </div>
                     
                 @else
