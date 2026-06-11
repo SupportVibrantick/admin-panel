@@ -2,6 +2,9 @@
 namespace App\Http\Controllers\MLM;
 
 use App\Http\Controllers\Controller;
+use App\Models\FundRequest;
+use App\Models\FundSummary;
+use App\Models\FundTransfer;
 use App\Models\MlmUser;
 use App\Models\PayoutBalance;
 use App\Models\PayoutTransaction;
@@ -37,6 +40,18 @@ public function dashboard(Request $request)
     
     return view('admin.pages.mlm.payout-dashboard', compact('config', 'usersWithPayouts'));
 }
+
+    public function payoutRequest(Request $request)
+    {
+        $payoutRequests = FundRequest::with('user', 'bankDetail')
+            // ->where('type', 'withdrawal')
+            // ->where('status', 'pending')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+            // dd($payoutRequests->toArray());
+        
+        return view('admin.pages.mlm.payout-requests', compact('payoutRequests'));
+    }
 
     public function details($userId)
     {
@@ -96,6 +111,39 @@ public function dashboard(Request $request)
             $msg = "❌ Rejected";
         }
         return back()->with('success', $msg);
+    }
+
+    public function payoutSummary(Request $request)
+    {
+        $summary = FundSummary::with('user')
+            ->orderBy('transaction_date', 'desc')
+            ->paginate(20);
+        return view('admin.pages.mlm.payout-summary', compact('summary'));   
+    }
+    public function payoutTransferHistory(Request $request)
+    {
+        $transfers = FundTransfer::with(['sender', 'receiver'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
+            
+        return view('admin.pages.mlm.payout-transfer-history', compact('transfers'));   
+    }
+
+    public function updatePayoutRequest(Request $request, $id)
+    {
+        // dd($request->all(), $id);
+        $v = $request->validate([
+            'status' => 'required|in:pending,approved,rejected',
+        ]);
+
+        $fundRequest = FundRequest::findOrFail($id);
+        $fundRequest->update(['status' => $v['status']]);
+
+        if ($v['status'] === 'approved') {
+             
+        }
+
+        return back()->with('success', 'Payout request updated successfully!');
     }
     
 }

@@ -29,7 +29,7 @@ class MLMUserController extends Controller
         $users = MlmUser::with(['sponsor', 'tree'])
             ->where('is_deleted', false)
             ->orderBy('created_at', 'desc')
-            ->paginate(15);
+            ->paginate(10);
 
         // ✅ Load active products for order modal
         $products = Product::where('status', 1)

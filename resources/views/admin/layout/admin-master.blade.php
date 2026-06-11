@@ -123,6 +123,7 @@
     <!-- Datatable -->
     <script src="{{ url('vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ url('vendor/datatables/js/dataTables.responsive.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     {{-- for the push script of the pages --}}
     @stack('scripts')
     <script>

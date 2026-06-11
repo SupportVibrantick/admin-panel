@@ -112,23 +112,20 @@
                         </a>
                     </li>
                     <li>
-                        <a href="javascript:void(0)">
-                          
+                        <a href="{{ route('mlm-users.payout-request') }}">                          
                             <span>Payout Requests</span>
                         </a>
                     </li>
                     <li>
-                        <a href="javascript:void(0)">
-                          
-                            <span>Payout Preferences</span>
+                        <a href="{{ route('mlm-users.payout-summary') }}">                          
+                            <span>Payout Summary</span>
                         </a>
                     </li>
                     <li>
-                        <a href="javascript:void(0)">
-                          
-                            <span>Compensation Settings</span>
+                        <a href="{{ route('mlm-users.payout-transfer-history') }}">                          
+                            <span>Payout Transfer History</span>
                         </a>
-                    </li>
+                    </li> 
                 </ul>
             </li>
 
@@ -282,6 +279,9 @@
                         @endcan
                         @can('manage-website-settings')
                             <li><a href="{{ route('website-setting') }}">Website Settings</a></li>
+                        @endcan
+                        @can('manage-website-settings')
+                            <li><a href="{{ route('bank-account-settings.index') }}">Bank Account Settings</a></li>
                         @endcan
                     </ul>
                 </li>

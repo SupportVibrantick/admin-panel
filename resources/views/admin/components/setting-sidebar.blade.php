@@ -18,7 +18,7 @@
                             Settings</a></li> --}}
                     <li><a href="{{ route('website-setting') }}"> <i class="flaticon-381-internet"></i> Website
                             Setting</a></li>
-
+                    <li><a href="{{ route('bank-account-settings.index') }}"> <i class="fa-solid fa-building-columns"></i> Bank Account Settings</a></li>
                 </ul>
             </div>
         </div>

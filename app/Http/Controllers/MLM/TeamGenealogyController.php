@@ -11,45 +11,45 @@ use Illuminate\Support\Facades\Log;
 
 class TeamGenealogyController extends Controller
 {
-   private function buildTreeStructure($treeNode, $depth = 0, $maxDepth = 10)
-{
-    if (!$treeNode || $depth > $maxDepth) {
-        return null;
+    private function buildTreeStructure($treeNode, $depth = 0, $maxDepth = 10)
+    {
+        if (!$treeNode || $depth > $maxDepth) {
+            return null;
+        }
+        
+        $user = $treeNode->mlmUser;
+        
+        // ✅ Load children WITH their children (recursive eager loading)
+        $leftChild = $treeNode->leftChild ? 
+            MLMTree::where('id', $treeNode->leftChild->id)
+                ->with(['leftChild.mlmUser', 'rightChild.mlmUser', 
+                        'leftChild.leftChild.mlmUser', 'leftChild.rightChild.mlmUser',
+                        'rightChild.leftChild.mlmUser', 'rightChild.rightChild.mlmUser'])
+                ->first() : null;
+                
+        $rightChild = $treeNode->rightChild ?
+            MLMTree::where('id', $treeNode->rightChild->id)
+                ->with(['leftChild.mlmUser', 'rightChild.mlmUser',
+                        'leftChild.leftChild.mlmUser', 'leftChild.rightChild.mlmUser',
+                        'rightChild.leftChild.mlmUser', 'rightChild.rightChild.mlmUser'])
+                ->first() : null;
+        
+        return [
+            'id' => $treeNode->id,
+            'user_id' => $user->id,
+            'user_name' => $user->user_name,
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'email' => $user->email,
+            'position' => $treeNode->position,
+            'level' => $treeNode->level,
+            'is_active' => $user->is_active,
+            'is_root' => $depth === 0,
+            'cc_balance' => $user->payoutBalance?->cc_balance ?? 0,
+            'left' => $leftChild ? $this->buildTreeStructure($leftChild, $depth + 1, $maxDepth) : null,
+            'right' => $rightChild ? $this->buildTreeStructure($rightChild, $depth + 1, $maxDepth) : null,
+        ];
     }
-    
-    $user = $treeNode->mlmUser;
-    
-    // ✅ Load children WITH their children (recursive eager loading)
-    $leftChild = $treeNode->leftChild ? 
-        MLMTree::where('id', $treeNode->leftChild->id)
-            ->with(['leftChild.mlmUser', 'rightChild.mlmUser', 
-                    'leftChild.leftChild.mlmUser', 'leftChild.rightChild.mlmUser',
-                    'rightChild.leftChild.mlmUser', 'rightChild.rightChild.mlmUser'])
-            ->first() : null;
-            
-    $rightChild = $treeNode->rightChild ?
-        MLMTree::where('id', $treeNode->rightChild->id)
-            ->with(['leftChild.mlmUser', 'rightChild.mlmUser',
-                    'leftChild.leftChild.mlmUser', 'leftChild.rightChild.mlmUser',
-                    'rightChild.leftChild.mlmUser', 'rightChild.rightChild.mlmUser'])
-            ->first() : null;
-    
-    return [
-        'id' => $treeNode->id,
-        'user_id' => $user->id,
-        'user_name' => $user->user_name,
-        'first_name' => $user->first_name,
-        'last_name' => $user->last_name,
-        'email' => $user->email,
-        'position' => $treeNode->position,
-        'level' => $treeNode->level,
-        'is_active' => $user->is_active,
-        'is_root' => $depth === 0,
-        'cc_balance' => $user->payoutBalance?->cc_balance ?? 0,
-        'left' => $leftChild ? $this->buildTreeStructure($leftChild, $depth + 1, $maxDepth) : null,
-        'right' => $rightChild ? $this->buildTreeStructure($rightChild, $depth + 1, $maxDepth) : null,
-    ];
-}
    /**
      * 🌳 Team Genealogy - Visual Binary Tree View
      */
@@ -109,7 +109,7 @@ class TeamGenealogyController extends Controller
             $query->where('position', $request->position);
         }
         
-        $teamMembers = $query->paginate(50);
+        $teamMembers = $query->paginate(20);
         
         // Stats
         $downlineIds = $this->getAllDownlineIds($currentUser->id);

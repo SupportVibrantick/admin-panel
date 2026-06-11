@@ -63,7 +63,7 @@
         <!-- 📋 Team Downline Table -->
         <div class="card">
             <div class="card-header bg-white">
-                <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex justify-content-between align-items-center w-100">
                     <h5 class="card-title mb-0">Team Downline</h5>
                     <button class="btn btn-sm btn-primary" onclick="exportTable()">
                         <i class="fas fa-download me-1"></i> Export
@@ -187,7 +187,7 @@
                                                 </li>
                                                 <li><hr class="dropdown-divider"></li>
                                                 <li>
-                                                    <a class="dropdown-item" href="{{ route('team-genealogy.profile', $member->mlm_user_id) }}">
+                                                    <a class="dropdown-item" href="{{ route('referral-genealogy.profile', ['userId' => $member->mlm_user_id]) }}">
                                                         <i class="fas fa-user me-2"></i> View Profile
                                                     </a>
                                                 </li>
