@@ -31,7 +31,12 @@ use App\Http\Controllers\Api\ShippingPolicyApiController;
 use App\Http\Controllers\Api\CancellationApiController;
 use App\Http\Controllers\Api\DisclaimerApiController;
 use App\Http\Controllers\Api\SystemApiController;
+use App\Http\Controllers\Api\MLMApiController;
+use App\Http\Controllers\Api\AdminBankApiController;
+use App\Http\Controllers\Api\FundSummaryApiController;
+use App\Http\Controllers\Api\FundRequestApiController;
 
+use App\Http\Controllers\Api\FundTransferApiController;
 
 
 Route::get('/ping', function () {
@@ -69,3 +74,38 @@ Route::get('/allied-health-service', [alliedHealthApiController::class, 'index']
 Route::get('/plan-management-service', [planManagementApiController::class, 'index']);
 Route::get('/support-coordination-service', [supportCoordinationApiController::class, 'index']);
 Route::get('/system-setting', [SystemApiController::class, 'index']);
+
+
+    
+    // 1. Referrals
+    Route::get('/referrals', [MLMApiController::class, 'getReferrals']);
+    Route::get('/referrals/profile/{userId}', [MLMApiController::class, 'getReferralProfile']);
+    
+    // 2. Holding Tank
+    Route::get('/holding-tank', [MLMApiController::class, 'getHoldingTank']);
+    Route::post('/holding-tank/place', [MLMApiController::class, 'placeUser']);
+    
+    // 3. Referral Downline (Table)
+    Route::get('/downline', [MLMApiController::class, 'getReferralDownline']);
+    
+    // 4. Team Genealogy & Binary Tree
+    Route::get('/team/genealogy', [MLMApiController::class, 'getTeamGenealogy']);
+    Route::get('/team/downline', [MLMApiController::class, 'getTeamDownline']);
+    Route::get('/team/user-profile/{userId}', [MLMApiController::class, 'getUserProfile']);
+    Route::get('/team/user-downline/{userId}', [MLMApiController::class, 'getUserDownline']);
+
+
+    Route::get('/admin-bank-details', [AdminBankApiController::class, 'index']);
+Route::get('/admin-bank-details/{id}', [AdminBankApiController::class, 'show']);
+Route::get('/fund-summary', [FundSummaryApiController::class, 'index']);
+// Fund Request APIs
+Route::get('/fund-request/bank-details', [FundRequestApiController::class, 'getBankDetails']);
+Route::post('/fund-request/submit', [FundRequestApiController::class, 'submit']);
+Route::get('/fund-requests', [FundRequestApiController::class, 'index']); // Admin
+Route::put('/fund-requests/{id}/status', [FundRequestApiController::class, 'updateStatus']); // Admin
+
+// Fund Transfer APIs
+Route::post('/fund-transfer/transfer', [FundTransferApiController::class, 'transfer']);
+Route::get('/fund-transfer/sent', [FundTransferApiController::class, 'getSentTransfers']);
+Route::get('/fund-transfer/received', [FundTransferApiController::class, 'getReceivedTransfers']);
+Route::get('/fund-transfer/wallet-balance', [FundTransferApiController::class, 'getWalletBalance']);
