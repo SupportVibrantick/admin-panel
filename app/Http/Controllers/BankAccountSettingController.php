@@ -10,7 +10,7 @@ class BankAccountSettingController extends Controller
     public function index()
     {       
         $bankDetails = AdminBankDetail::first(); // Assuming you have only one set of bank details
-        return view('admin.pages.MLM.bank-account-settings', compact('bankDetails'));
+        return view('admin.pages.mlm.bank-account-settings', compact('bankDetails'));
     }
 
     public function update(Request $request, $bankDetailId)
