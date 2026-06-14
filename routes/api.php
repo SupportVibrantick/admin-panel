@@ -1,42 +1,46 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\HomeApiController;
 use App\Http\Controllers\Api\AboutApiController;
-use App\Http\Controllers\Api\CommitmentApiController;
-use App\Http\Controllers\Api\TeamApiController;
-use App\Http\Controllers\Api\PrivacyApiController;
-use App\Http\Controllers\Api\TermsApiController;
-use App\Http\Controllers\Api\NdisApiController;
-use App\Http\Controllers\Api\AgedcareApiController;
-use App\Http\Controllers\Api\BlogsApiController;
-use App\Http\Controllers\Api\NiisqApiController;
-use App\Http\Controllers\Api\DvaApiController;
-use App\Http\Controllers\Api\ClientResourcesApiController;
-use App\Http\Controllers\Api\StaffResourcesApiController;
-use App\Http\Controllers\Api\FaqApiController;
-use App\Http\Controllers\Api\CareerApiController;
-use App\Http\Controllers\Api\HomeServiceApiController;
-use App\Http\Controllers\Api\CommunityParticipationApiController;
-use App\Http\Controllers\Api\supportIndependentApiController;
-use App\Http\Controllers\Api\careCoordinationApiController;
-use App\Http\Controllers\Api\communityNursingApiController;
-use App\Http\Controllers\Api\alliedHealthApiController;
-use App\Http\Controllers\Api\planManagementApiController;
-use App\Http\Controllers\Api\supportCoordinationApiController;
-use App\Http\Controllers\Api\ProductApiController;
 use App\Http\Controllers\Api\AccessibilityApiController;
-use App\Http\Controllers\Api\GrievanceApiController;
-use App\Http\Controllers\Api\ShippingPolicyApiController;
-use App\Http\Controllers\Api\CancellationApiController;
-use App\Http\Controllers\Api\DisclaimerApiController;
-use App\Http\Controllers\Api\SystemApiController;
-use App\Http\Controllers\Api\MLMApiController;
 use App\Http\Controllers\Api\AdminBankApiController;
-use App\Http\Controllers\Api\FundSummaryApiController;
+use App\Http\Controllers\Api\AgedcareApiController;
+use App\Http\Controllers\Api\alliedHealthApiController;
+use App\Http\Controllers\Api\BlogsApiController;
+use App\Http\Controllers\Api\CancellationApiController;
+use App\Http\Controllers\Api\careCoordinationApiController;
+use App\Http\Controllers\Api\CareerApiController;
+use App\Http\Controllers\Api\ClientResourcesApiController;
+use App\Http\Controllers\Api\CommitmentApiController;
+use App\Http\Controllers\Api\communityNursingApiController;
+use App\Http\Controllers\Api\CommunityParticipationApiController;
+use App\Http\Controllers\Api\DisclaimerApiController;
+use App\Http\Controllers\Api\DvaApiController;
+use App\Http\Controllers\Api\FaqApiController;
 use App\Http\Controllers\Api\FundRequestApiController;
-
+use App\Http\Controllers\Api\FundSummaryApiController;
 use App\Http\Controllers\Api\FundTransferApiController;
+use App\Http\Controllers\Api\GrievanceApiController;
+use App\Http\Controllers\Api\GrievanceController;
+use App\Http\Controllers\Api\HomeApiController;
+use App\Http\Controllers\Api\HomeServiceApiController;
+use App\Http\Controllers\Api\KycController;
+use App\Http\Controllers\Api\MLMApiController;
+use App\Http\Controllers\Api\NdisApiController;
+use App\Http\Controllers\Api\NiisqApiController;
+use App\Http\Controllers\Api\planManagementApiController;
+use App\Http\Controllers\Api\PrivacyApiController;
+use App\Http\Controllers\Api\ProductApiController;
+use App\Http\Controllers\Api\ShippingPolicyApiController;
+use App\Http\Controllers\Api\StaffResourcesApiController;
+use App\Http\Controllers\Api\supportCoordinationApiController;
+use App\Http\Controllers\Api\supportIndependentApiController;
+use App\Http\Controllers\Api\SystemApiController;
+
+use App\Http\Controllers\Api\TeamApiController;
+use App\Http\Controllers\Api\TermsApiController;
+use Illuminate\Support\Facades\Route;
+
+
 
 
 Route::get('/ping', function () {
@@ -109,3 +113,13 @@ Route::post('/fund-transfer/transfer', [FundTransferApiController::class, 'trans
 Route::get('/fund-transfer/sent', [FundTransferApiController::class, 'getSentTransfers']);
 Route::get('/fund-transfer/received', [FundTransferApiController::class, 'getReceivedTransfers']);
 Route::get('/fund-transfer/wallet-balance', [FundTransferApiController::class, 'getWalletBalance']);
+
+Route::get('/kyc', [KycController::class, 'index']);
+Route::post('/kyc/submit', [KycController::class, 'submit']);
+
+// Grievance / Support Ticket APIs
+Route::post('raise-ticket',            [GrievanceController::class, 'raiseTicket']);
+Route::post('reply-ticket',            [GrievanceController::class, 'replyTicket']);
+Route::get('ticket-messages/{id}',     [GrievanceController::class, 'getMessages']);
+Route::put('ticket-status/{id}',       [GrievanceController::class, 'changeStatus']);
+Route::get('my-tickets',               [GrievanceController::class, 'myTickets']);

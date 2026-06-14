@@ -258,6 +258,12 @@
                 </li>
             @endcan
 
+            <li><a href="{{ route('kyc-documents.index') }}" class="ai-icon" aria-expanded="false">
+                    <i class="fa fa-user-circle"></i>
+                    <span class="nav-text">KYC</span>
+                </a>
+            </li>
+
             @canany(['manage-general-settings', 'manage-system-settings', 'manage-seo-settings',
                 'manage-website-settings'])
                 <li><a href="javascript:void(0)" class="has-arrow ai-icon" aria-expanded="false">
@@ -319,6 +325,13 @@
                     </ul>
                 </li>
             @endcanany
+
+            <li>
+                <a href="{{ route('grievance.index') }}" class="ai-icon" aria-expanded="false">
+                    <i class="fa fa-user-circle"></i>
+                    <span class="nav-text">Grivance Cell</span>
+                </a>
+            </li>
 
             <li>
                 <div class="custom-btn-logout">
