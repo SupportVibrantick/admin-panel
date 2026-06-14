@@ -80,7 +80,7 @@
                     </table>
                 </div>
                 <div class="card-footer">
-                    {{ $holdingUsers->links() }}
+                    {{ $holdingUsers->links('pagination::bootstrap-5') }}
                 </div>
             </div>
         </div>

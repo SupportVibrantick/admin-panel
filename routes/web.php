@@ -71,6 +71,8 @@ use App\Http\Controllers\IndependentAccommodationController;
 use App\Http\Controllers\JobCareerApplicationController;
 use App\Http\Controllers\JobCareerController;
 use App\Http\Controllers\MLM\CCSettingController;
+use App\Http\Controllers\MLM\GrievanceCellController;
+use App\Http\Controllers\MLM\KycDocumentController;
 use App\Http\Controllers\MLM\MLMOrderController;
 use App\Http\Controllers\MLM\MLMPayoutController;
 use App\Http\Controllers\MLM\MLMTreeController;
@@ -112,18 +114,20 @@ use App\Http\Controllers\SupportCoordinationBenefitController;
 use App\Http\Controllers\SupportCoordinationFaqController;
 use App\Http\Controllers\SupportCoordinationPlanController;
 use App\Http\Controllers\SupportCoordinationServiceController;
+
 use App\Http\Controllers\SystemSetting;
 use App\Http\Controllers\TermsConditionController;
-
 use App\Http\Controllers\TestController;
+
 use App\Http\Controllers\TestimonialController;
 use App\Http\Controllers\UserRegisterController;
-
 use App\Http\Controllers\ValueController;
 use App\Http\Controllers\WebsiteSetting;
 use App\Http\Controllers\WhyChooseSectionController;
 use App\Http\Controllers\WhyPartnerController;
 use Illuminate\Support\Facades\Route;
+
+
 
 
 Route::get('/', function () {
@@ -923,6 +927,7 @@ Route::post('/mlm-users/create-order', [MLMOrderController::class, 'store'])->na
 // 💰 Payouts - ✅ FIXED: Point to MLMPayoutController
 Route::get('/mlm-users/payout', [MLMPayoutController::class, 'dashboard'])->name('mlm-users.payout');
 Route::get('/mlm-users/payout-request', [MLMPayoutController::class, 'payoutRequest'])->name('mlm-users.payout-request');
+Route::get('/mlm-users/payout-request/{id}', [MLMPayoutController::class, 'showPayoutRequest'])->name('mlm-users.show-payout-request');
 Route::put('/mlm-users/payout-request/{id}', [MLMPayoutController::class, 'updatePayoutRequest'])->name('mlm-users.update-payout-request');
 Route::get('/mlm-users/payout-summary', [MLMPayoutController::class, 'payoutSummary'])->name('mlm-users.payout-summary');
 Route::get('/mlm-users/payout-transfer-history', [MLMPayoutController::class, 'payoutTransferHistory'])->name('mlm-users.payout-transfer-history');
@@ -1015,7 +1020,19 @@ Route::get('/pending-earnings', [WalletController::class, 'pendingEarnings'])
     ->name('wallets.cc-logs');
     Route::get('/pair-matching-logs', [WalletController::class, 'pairMatchingLogs'])
     ->name('wallets.pair-matching-logs');
+
+    Route::get('kyc-documents', [KycDocumentController::class, 'index'])->name('kyc-documents.index');
+    Route::get('kyc-documents/{id}', [KycDocumentController::class, 'viewKyc'])->name('kyc-documents.show');
+    Route::put('kyc-documents/{id}', [KycDocumentController::class, 'updateKyc'])->name('kyc-documents.update');
+
+    Route::get('grievance-cell', [GrievanceCellController::class, 'index'])->name('grievance.index');
+    Route::get('grievances/messages/{id}', [GrievanceCellController::class, 'messages'])->name('grievance.messages');
+    Route::post('grievances/reply', [GrievanceCellController::class, 'reply'])->name('grievance.reply');
+    Route::post('grievances/status/{id}', [GrievanceCellController::class, 'changeStatus'])->name('grievance.status');
+
 });
+
+
 
 
 
