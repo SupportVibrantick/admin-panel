@@ -257,6 +257,17 @@ class MLMPayoutController extends Controller
         $fundRequest->update(['status' => $v['status']]);
 
         if ($v['status'] === 'approved') {
+            // FundSummary::create([
+            //     'user_id' => $fundRequest->user_id,
+            //     'username' => $fundRequest->user->user_name,
+            //     'transaction_date' => now(),
+            //     'type' => 'ADMIN CREDIT',
+            //     'particular' => 'Fund Request Approved',
+            //     'remark' => $request->remarks ?? 'Fund request approved by admin',
+            //     'credit' => $fundRequest->amount,
+            //     'debit' => 0,
+            // ]);
+
             FundTransfer::create([
                 'sender_id'           => 1, // Admin ID
                 'receiver_id'         => $fundRequest->user_id,
