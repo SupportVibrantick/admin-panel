@@ -69,19 +69,19 @@
                                 
                                 <div class="col-md-6 mb-3">
                                     <label for="remarks" class="form-label">Pan Card Image</label>
-                                    <img src="" class="img-fluid img-thumbnail" alt="" id="pan_image">
+                                    <img src="" class="w-100 img-thumbnail" alt="" id="pan_image" style="height:360px;">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="remarks" class="form-label">Aadhaar Front Image</label>
-                                    <img src="" class="img-fluid img-thumbnail" alt="" id="aadhaar_front_image">
+                                    <img src="" class="w-100 img-thumbnail" alt="" id="aadhaar_front_image" style="height:360px;">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="remarks" class="form-label">Aadhaar Back Image</label>
-                                    <img src="" class="img-fluid img-thumbnail" alt="" id="aadhaar_back_image">
+                                    <img src="" class="w-100 img-thumbnail" alt="" id="aadhaar_back_image" style="height:360px;">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="remarks" class="form-label">Bank Document</label>
-                                    <img src="" class="img-fluid img-thumbnail" alt="" id="bank_document">
+                                    <img src="" class="w-100 img-thumbnail" alt="" id="bank_document" style="height:360px;">
                                 </div> 
                                 <div class="col-md-12 mb-3">
                                     <label class="form-label">Status</label>
@@ -202,10 +202,10 @@
                         $('#reject_reason').val(response.reject_reason);
                         $('#aadhaarNumber').val(response.aadhaar_number);
                         $('input[name="status"][value="' + response.status + '"]').prop('checked', true);
-                        $('#pan_image').attr('src', response.pan_image);
-                        $('#aadhaar_front_image').attr('src', response.aadhaar_front_image);
-                        $('#aadhaar_back_image').attr('src', response.aadhaar_back_image);
-                        $('#bank_document').attr('src', response.bank_document_image);
+                        $('#pan_image').attr('src', response.pan_image ?? 'https://placehold.net/400x400.png');
+                        $('#aadhaar_front_image').attr('src', response.aadhaar_front_image ?? 'https://placehold.net/400x400.png');
+                        $('#aadhaar_back_image').attr('src', response.aadhaar_back_image ?? 'https://placehold.net/400x400.png');
+                        $('#bank_document').attr('src', response.bank_document_image ?? 'https://placehold.net/400x400.png');
 
                         $('.update-kyc-request').attr('data-id', requestId);
                         $('#kycmodal').modal('show');

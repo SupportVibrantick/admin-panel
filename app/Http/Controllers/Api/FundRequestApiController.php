@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AdminBankDetail;
 use App\Models\FundRequest;
 use App\Models\FundSummary;
+use App\Models\FundTransfer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -17,7 +18,7 @@ class FundRequestApiController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = FundRequest::with(['user', 'bankDetail']);
+            $query = FundRequest::with(['user', 'bankDetail'])->where('user_id', $request->user_id);
 
             // Filter by status
             if ($request->filled('status')) {
@@ -163,6 +164,37 @@ class FundRequestApiController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to submit fund request',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function withdrawalHistory(Request $request)
+    {
+        try {
+            $query = FundTransfer::with('user')->where('receiver_id', $request->user_id);
+
+            // // Filter by status
+            // if ($request->filled('status')) {
+            //     $query->where('status', $request->status);
+            // }
+
+            // // Filter by user
+            // if ($request->filled('user_id')) {
+            //     $query->where('user_id', $request->user_id);
+            // }
+
+            $fundTransfer = $query->orderBy('created_at', 'desc')->get();
+
+            return response()->json([
+                'success' => true,
+                'data' => $fundTransfer,
+                'message' => 'Fund Transfer fetched successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch fund Transfer',
                 'error' => $e->getMessage()
             ], 500);
         }

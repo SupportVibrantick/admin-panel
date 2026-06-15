@@ -100,26 +100,30 @@ Route::get('/system-setting', [SystemApiController::class, 'index']);
 
 
     Route::get('/admin-bank-details', [AdminBankApiController::class, 'index']);
-Route::get('/admin-bank-details/{id}', [AdminBankApiController::class, 'show']);
-Route::get('/fund-summary', [FundSummaryApiController::class, 'index']);
-// Fund Request APIs
-Route::get('/fund-request/bank-details', [FundRequestApiController::class, 'getBankDetails']);
-Route::post('/fund-request/submit', [FundRequestApiController::class, 'submit']);
-Route::get('/fund-requests', [FundRequestApiController::class, 'index']); // Admin
-Route::put('/fund-requests/{id}/status', [FundRequestApiController::class, 'updateStatus']); // Admin
+    Route::get('/admin-bank-details/{id}', [AdminBankApiController::class, 'show']);
+    Route::get('/fund-summary', [FundSummaryApiController::class, 'index']);
+    // Fund Request APIs
+    Route::get('/fund-request/bank-details', [FundRequestApiController::class, 'getBankDetails']);
+    Route::post('/fund-request/submit', [FundRequestApiController::class, 'submit']);
+    Route::get('/fund-requests', [FundRequestApiController::class, 'index']); // Admin
+    Route::put('/fund-requests/{id}/status', [FundRequestApiController::class, 'updateStatus']); // Admin
+    Route::get('/withdrawal-history', [FundRequestApiController::class, 'withdrawalHistory']); // Admin
 
-// Fund Transfer APIs
-Route::post('/fund-transfer/transfer', [FundTransferApiController::class, 'transfer']);
-Route::get('/fund-transfer/sent', [FundTransferApiController::class, 'getSentTransfers']);
-Route::get('/fund-transfer/received', [FundTransferApiController::class, 'getReceivedTransfers']);
-Route::get('/fund-transfer/wallet-balance', [FundTransferApiController::class, 'getWalletBalance']);
+    // Fund Transfer APIs
+    Route::post('/fund-transfer/transfer', [FundTransferApiController::class, 'transfer']);
+    Route::get('/fund-transfer/sent', [FundTransferApiController::class, 'getSentTransfers']);
+    Route::get('/fund-transfer/received', [FundTransferApiController::class, 'getReceivedTransfers']);
+    Route::get('/fund-transfer/wallet-balance', [FundTransferApiController::class, 'getWalletBalance']);
 
-Route::get('/kyc', [KycController::class, 'index']);
-Route::post('/kyc/submit', [KycController::class, 'submit']);
+    Route::get('/kyc', [KycController::class, 'index']);
+    Route::get('/kyc/status', [KycController::class, 'kycStatus']);
+    Route::get('/kyc/submit', [KycController::class, 'submit']);
 
-// Grievance / Support Ticket APIs
-Route::post('raise-ticket',            [GrievanceController::class, 'raiseTicket']);
-Route::post('reply-ticket',            [GrievanceController::class, 'replyTicket']);
-Route::get('ticket-messages/{id}',     [GrievanceController::class, 'getMessages']);
-Route::put('ticket-status/{id}',       [GrievanceController::class, 'changeStatus']);
-Route::get('my-tickets',               [GrievanceController::class, 'myTickets']);
+    // Grievance / Support Ticket APIs
+    Route::post('raise-ticket',            [GrievanceController::class, 'raiseTicket']);
+    Route::post('reply-ticket',            [GrievanceController::class, 'replyTicket']);
+    Route::get('ticket-messages/{id}',     [GrievanceController::class, 'getMessages']);
+    Route::put('ticket-status/{id}',       [GrievanceController::class, 'changeStatus']);
+    Route::get('my-tickets',               [GrievanceController::class, 'myTickets']);
+
+    Route::get('outbox',               [GrievanceController::class, 'outbox']);

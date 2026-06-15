@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Kyc;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class KycController extends Controller
 {
@@ -110,5 +111,30 @@ class KycController extends Controller
             'message' => 'KYC submitted successfully',
             'data' => $kyc
         ]);
+    }
+
+
+    public function kycStatus(Request $request)
+    {
+        try {
+            $status = Kyc::where('user_id', $request->user_id)
+                ->select('status', 'id', 'user_id')
+                ->latest()
+                ->first();
+
+            return response()->json([
+                'success' => true,
+                'data' => $status
+            ], 200);
+
+        } catch (\Exception $e) {
+            Log::error('KYC Status Error: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong while fetching KYC status.',
+                'error' => $e->getMessage() 
+            ], 500);
+        }
     }
 }

@@ -253,16 +253,26 @@ class MLMPayoutController extends Controller
             'status' => 'required|in:pending,approved,rejected',
         ]);
 
-        $fundRequest = FundRequest::findOrFail($id);
+        $fundRequest = FundRequest::with(['user', 'bankDetail'])->findOrFail($id);
         $fundRequest->update(['status' => $v['status']]);
 
         if ($v['status'] === 'approved') {
-             
+            FundTransfer::create([
+                'sender_id'           => 1, // Admin ID
+                'receiver_id'         => $fundRequest->user_id,
+                'sender_username'     => 'ADMIN',
+                'receiver_username'   => $fundRequest->user->user_name,
+                'amount'              => $fundRequest->amount,
+                'remark'              => $request->remarks,
+                'transaction_password'=> '1234567890',
+                'status'              => 'completed',
+            ]);
         }
 
         return response()->json([
             'success' => true,
-            'message' => 'Payout request updated successfully'
+            'message' => 'Payout request updated successfully',
+            'data' => $fundRequest,
             ]);
     }
     
