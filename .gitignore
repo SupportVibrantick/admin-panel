@@ -20,4 +20,7 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 /public/storage
+.htaccess
+default.php
+public/kyc
 

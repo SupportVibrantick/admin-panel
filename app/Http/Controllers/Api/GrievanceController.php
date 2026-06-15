@@ -256,4 +256,30 @@ class GrievanceController extends Controller
             'tickets' => $tickets,
         ]);
     }
+
+    public function outBox(Request $request)
+    {
+        try {
+            $query = Grivance::with(['user'])->where('user_id', $request->user_id);
+
+            // // Filter by status
+            // if ($request->filled('status')) {
+            //     $query->where('status', $request->status);
+            // }
+
+            $fundTransfer = $query->orderBy('created_at', 'desc')->get();
+
+            return response()->json([
+                'success' => true,
+                'data' => $fundTransfer,
+                'message' => 'Outbox fetched successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch Outbox',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

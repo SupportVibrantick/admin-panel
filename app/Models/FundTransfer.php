@@ -26,6 +26,10 @@ class FundTransfer extends Model
         'amount' => 'decimal:2',
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'sender_id');
+    }
     public function sender()
     {
         return $this->belongsTo(MlmUser::class, 'sender_id');
@@ -35,4 +39,6 @@ class FundTransfer extends Model
     {
         return $this->belongsTo(MlmUser::class, 'receiver_id');
     }
+
+
 }
