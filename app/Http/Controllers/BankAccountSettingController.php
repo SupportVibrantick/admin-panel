@@ -13,6 +13,37 @@ class BankAccountSettingController extends Controller
         return view('admin.pages.mlm.bank-account-settings', compact('bankDetails'));
     }
 
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'mode_name'  => 'required|string|max:255',
+            'address'    => 'required|string|max:255',
+            'account_no' => 'required|string|max:255',
+            'bank_name'  => 'required|string|max:255',
+            'ifsc_code'  => 'required|string|max:255',
+            'is_active'  => 'required|boolean',
+            'image'      => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $imagePath = null;
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('bank-details', 'public');
+        }
+
+        AdminBankDetail::create([
+            'mode_name'  => $validated['mode_name'],
+            'address'    => $validated['address'],
+            'account_no' => $validated['account_no'],
+            'bank_name'  => $validated['bank_name'],
+            'ifsc_code'  => $validated['ifsc_code'],
+            'is_active'  => $validated['is_active'],
+            'image'      => $imagePath,
+        ]);
+
+        return back()->with('success', 'Bank account created successfully.');
+    }
+
     public function update(Request $request, $bankDetailId)
     {
         $bankDetail = AdminBankDetail::findOrFail($bankDetailId);   

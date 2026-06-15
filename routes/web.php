@@ -983,6 +983,7 @@ Route::delete('/cc-settings/{ccSetting}', [CCSettingController::class, 'destroy'
 
 // Bank account Settings
 Route::get('/bank-account-settings', [BankAccountSettingController::class, 'index'])->name('bank-account-settings.index');
+Route::post('/bank-account-settings', [BankAccountSettingController::class, 'store'])->name('bank-account-settings.store');
 Route::put('/bank-account-settings/{bankAccountSetting}', [BankAccountSettingController::class, 'update'])->name('bank-account-settings.update');
 Route::delete('/bank-account-settings/{bankAccountSetting}', [BankAccountSettingController::class, 'destroy'])->name('bank-account-settings.destroy');
 

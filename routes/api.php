@@ -117,7 +117,7 @@ Route::get('/system-setting', [SystemApiController::class, 'index']);
 
     Route::get('/kyc', [KycController::class, 'index']);
     Route::get('/kyc/status', [KycController::class, 'kycStatus']);
-    Route::get('/kyc/submit', [KycController::class, 'submit']);
+    Route::post('/kyc/submit', [KycController::class, 'submit']);
 
     // Grievance / Support Ticket APIs
     Route::post('raise-ticket',            [GrievanceController::class, 'raiseTicket']);
