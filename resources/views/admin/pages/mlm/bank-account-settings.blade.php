@@ -32,15 +32,22 @@
                             <h4 class="card-title">Bank Account Settings</h4>
                         </div>
                         <div class="card-body">                           
-                            <form action="{{ route('bank-account-settings.update', $bankDetails->id) }}" method="POST">
+                            <form action="{{ $bankDetails 
+                                    ? route('bank-account-settings.update', $bankDetails->id) 
+                                    : route('bank-account-settings.store') }}"
+                                method="POST" enctype="multipart/form-data">
+
                                 @csrf
-                                @method('PUT')
+
+                                @if($bankDetails)
+                                    @method('PUT')
+                                @endif
 
                                 <div class="row">
                                     <div class="col-lg-6 mb-4">
                                         <label for="bank_name" class="form-label fw-bold">Bank Name</label>
                                         <div class="input-group">
-                                            <input type="text" class="form-control @error('bank_name') is-invalid @enderror" name="bank_name" id="bank_name"  value="{{ old('bank_name', $bankDetails->bank_name) }}" required>
+                                            <input type="text" class="form-control @error('bank_name') is-invalid @enderror" name="bank_name" id="bank_name"  value="{{ old('bank_name', $bankDetails?->bank_name) }}" required>
                                         </div>
                                         @error('bank_name')
                                             <span class="invalid-feedback d-block">{{ $message }}</span>
@@ -49,7 +56,7 @@
                                     <div class="col-lg-6 mb-4">
                                         <label for="account_no" class="form-label fw-bold">Account Number</label>
                                         <div class="input-group">
-                                            <input type="text" class="form-control @error('account_no') is-invalid @enderror" name="account_no" id="account_no"  value="{{ old('account_no', $bankDetails->account_no) }}" required>
+                                            <input type="text" class="form-control @error('account_no') is-invalid @enderror" name="account_no" id="account_no"  value="{{ old('account_no', $bankDetails?->account_no) }}" required>
                                         </div>
                                         @error('account_no')
                                             <span class="invalid-feedback d-block">{{ $message }}</span>
@@ -58,7 +65,7 @@
                                     <div class="col-lg-6 mb-4">
                                         <label for="ifsc_code" class="form-label fw-bold">IFSC Code</label>
                                         <div class="input-group">
-                                            <input type="text" class="form-control @error('ifsc_code') is-invalid @enderror" name="ifsc_code" id="ifsc_code"  value="{{ old('ifsc_code', $bankDetails->ifsc_code) }}" required>
+                                            <input type="text" class="form-control @error('ifsc_code') is-invalid @enderror" name="ifsc_code" id="ifsc_code"  value="{{ old('ifsc_code', $bankDetails?->ifsc_code) }}" required>
                                         </div>
                                         @error('ifsc_code')
                                             <span class="invalid-feedback d-block">{{ $message }}</span>
@@ -67,7 +74,7 @@
                                     <div class="col-lg-6 mb-4">
                                         <label for="address" class="form-label fw-bold">Address</label>
                                         <div class="input-group">
-                                            <input type="text" class="form-control @error('address') is-invalid @enderror" name="address"  value="{{ old('address', $bankDetails->address) }}" required>
+                                            <input type="text" class="form-control @error('address') is-invalid @enderror" name="address"  value="{{ old('address', $bankDetails?->address) }}" required>
                                         </div>
                                         @error('address')
                                             <span class="invalid-feedback d-block">{{ $message }}</span>
@@ -76,7 +83,7 @@
                                     <div class="col-lg-6 mb-4">
                                         <label for="mode_name" class="form-label fw-bold">Mode Name</label>
                                         <div class="input-group">
-                                            <input type="text" class="form-control @error('mode_name') is-invalid @enderror" name="mode_name" id="mode_name"  value="{{ old('mode_name', $bankDetails->mode_name) }}" required>
+                                            <input type="text" class="form-control @error('mode_name') is-invalid @enderror" name="mode_name" id="mode_name"  value="{{ old('mode_name', $bankDetails?->mode_name) }}" required>
                                         </div>
                                         @error('mode_name')
                                             <span class="invalid-feedback d-block">{{ $message }}</span>
@@ -86,8 +93,8 @@
                                     <div class="col-lg-6 mb-4">
                                         <label for="cc_is_active" class="form-label fw-bold">Status</label>
                                         <select name="is_active" id="cc_is_active" class="form-control @error('is_active') is-invalid @enderror">
-                                            <option value="1" {{ old('is_active', $bankDetails->is_active) == 1 ? 'selected' : '' }}>Active</option>
-                                            <option value="0" {{ old('is_active', $bankDetails->is_active) == 0 ? 'selected' : '' }}>Inactive</option>
+                                            <option value="1" {{ old('is_active', $bankDetails?->is_active) == 1 ? 'selected' : '' }}>Active</option>
+                                            <option value="0" {{ old('is_active', $bankDetails?->is_active) == 0 ? 'selected' : '' }}>Inactive</option>
                                         </select>
                                         @error('is_active')
                                             <span class="invalid-feedback d-block">{{ $message }}</span>
