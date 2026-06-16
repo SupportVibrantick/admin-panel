@@ -8,6 +8,7 @@ use App\Models\GrievanceMassage;
 use App\Models\Grivance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 
 class GrievanceCellController extends Controller
@@ -29,6 +30,9 @@ class GrievanceCellController extends Controller
                 ->addColumn('name', fn($row) => $row->first_name . ' ' . $row->last_name)
 
                 ->addColumn('username', fn($row) => $row->user_name)
+                ->addColumn('subject', function ($row) {
+                    return Str::limit($row->subject, 50);
+                })
 
                 ->addColumn('status', function ($row) {
                     $map = [
