@@ -31,7 +31,7 @@
                                 <th>Name</th>
                                 <th>Username</th>
                                 <th>Ticket No</th>
-                                <th>Subject</th>
+                                <th style="max-width: 150px;">Subject</th>
                                 <th>Category</th>
                                 <th>Status</th>
                                 <th>Date</th>
@@ -229,6 +229,7 @@ $(document).ready(function () {
     $('#kycTable').DataTable({
         processing: true,
         serverSide: true,
+        scrollX: true,
         ajax: window.routes.grievanceIndex,
         columns: [
             { data: 'DT_RowIndex',  name: 'DT_RowIndex', searchable: false, orderable: false },

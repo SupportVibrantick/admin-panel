@@ -13,10 +13,11 @@ class GrievanceController extends Controller
 { 
     public function raiseTicket(Request $request)
     {
+        // return response()->json($request->all());
         $validated = $request->validate([
             'user_id'    => 'required|exists:mlm_users,id',
             'subject'    => 'required|string|max:255',
-            'category'   => 'required|in:wallet,withdrawal,commission,kyc,account,other',
+            'category'   => 'required|in:dispatch,e-wallet,software-issue,kyc,TDS-and-gst,direct-seller,product-and-quality,other',
             'priority'   => 'nullable|in:low,medium,high',
             'message'    => 'required|string',
             'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
