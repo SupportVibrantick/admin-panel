@@ -145,7 +145,7 @@ class MLMUserController extends Controller
                 $q->where('user_name', '!=', 'Founder01');
             })
             ->latest()
-            ->paginate(15);
+            ->paginate(10);
 
         // ✅ Get ALL active users as parents (INCLUDING Founder01)
         $parents = MlmUser::where('is_active', true)

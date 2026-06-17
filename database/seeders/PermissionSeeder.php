@@ -56,6 +56,8 @@ class PermissionSeeder extends Seeder
             ['name' => 'manage-job-career', 'guard_name' => 'web'],
             ['name' => 'manage-privacy-policy', 'guard_name' => 'web'],
             ['name' => 'manage-terms-conditions', 'guard_name' => 'web'],
+            ['name' => 'manage-products', 'guard_name' => 'web'],
+            ['name' => 'manage-product-categories', 'guard_name' => 'web'],
             
             // Profile Permission
             ['name' => 'manage-profile', 'guard_name' => 'web'],

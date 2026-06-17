@@ -3,7 +3,12 @@
 
 <head>
     <!-- Title -->
-    <title>@yield("title")</title>
+   <title>
+        {{ config('app.name') }}
+        @hasSection('title')
+            | @yield('title')
+        @endif
+    </title>
 
     <!-- Meta -->
     <meta charset="utf-8" />

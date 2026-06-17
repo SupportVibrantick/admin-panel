@@ -209,7 +209,7 @@
 
                 <!-- Pagination -->
                 <div class="mt-3">
-                    {{ $teamMembers->links() }}
+                    {{ $teamMembers->links('pagination::bootstrap-5') }}
                 </div>
             </div>
         </div>

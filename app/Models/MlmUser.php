@@ -34,6 +34,10 @@ class MlmUser extends Model
     {
         return $this->belongsTo(MlmUser::class, 'sponsor_id');
     }
+    public function sponsorId(): BelongsTo
+    {
+        return $this->belongsTo(MlmUser::class, 'sponsor_id');
+    }
 
     // 🔗 Direct Downlines (within mlm_users)
     public function directDownlines(): HasMany
