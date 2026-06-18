@@ -12,7 +12,7 @@ class ProfileController extends Controller
 {
     public function profile(Request $request)
     {
-        $user = MlmUser::with([
+        $user = MlmUser::with([                
                 'sponsor:id,user_name,first_name,last_name'
             ])->findOrFail($request->user_id);
 
@@ -33,7 +33,7 @@ class ProfileController extends Controller
                 'is_active' => $user->is_active,
                 'created_at' => $user->created_at,
                 'sponsor' => $user->sponsor,
-            ]
+            ],
         ]);
     }
 
@@ -45,10 +45,47 @@ class ProfileController extends Controller
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => 'nullable|email|unique:users,email,' . $user->id,
+            // 'email' => 'nullable|email|unique:users,email,' . $user->id,
             'mobile' => 'nullable|string|max:15',
             'profile_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'date_of_birth' => 'nullable|date',
+            'gender' => 'nullable|in:male,female,other',
+            'father_name' => 'nullable|string|max:255',
+            'mother_name' => 'nullable|string|max:255',
+            'address_line_1' => 'nullable|string|max:255',
+            'address_line_2' => 'nullable|string|max:255',
+            'city' => 'nullable|string|max:100',
+            'district' => 'nullable|string|max:100',
+            'state' => 'nullable|string|max:100',
+            'country' => 'nullable|string|max:100',
+            'pincode' => 'nullable|string|max:10',
+            'nominee_name' => 'nullable|string|max:255',
+            'nominee_relation' => 'nullable|string|max:100',
         ]);
+
+        $userData = [
+            'first_name' => $validated['first_name'],
+            'last_name'  => $validated['last_name'],
+            'email'      => $user->email,
+            'mobile'     => $validated['mobile'] ?? null,
+        ];
+
+        $detailData = [
+            'date_of_birth'    => $validated['date_of_birth'] ?? null,
+            'gender'           => $validated['gender'] ?? null,
+            'father_name'      => $validated['father_name'] ?? null,
+            'mother_name'      => $validated['mother_name'] ?? null,
+            'address_line_1'   => $validated['address_line_1'] ?? null,
+            'address_line_2'   => $validated['address_line_2'] ?? null,
+            'city'             => $validated['city'] ?? null,
+            'district'         => $validated['district'] ?? null,
+            'state'            => $validated['state'] ?? null,
+            'country'          => $validated['country'] ?? null,
+            'pincode'          => $validated['pincode'] ?? null,
+            'nominee_name'     => $validated['nominee_name'] ?? null,
+            'nominee_relation' => $validated['nominee_relation'] ?? null,
+        ];
+         
 
         if ($request->hasFile('profile_image')) {
 
@@ -62,10 +99,14 @@ class ProfileController extends Controller
                 'public'
             );
 
-            $validated['profile_image'] = $path;
+            $detailData['profile_image'] = $path;
         }
 
-        $user->update($validated);
+        $user->update($userData);
+        $user->detail()->updateOrCreate(
+            // ['user_id' => $user->id],
+            $detailData
+        );
 
         return response()->json([
             'status' => true,

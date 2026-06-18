@@ -39,7 +39,9 @@ use App\Http\Controllers\Api\supportIndependentApiController;
 use App\Http\Controllers\Api\SystemApiController;
 use App\Http\Controllers\Api\TeamApiController;
 use App\Http\Controllers\Api\TermsApiController;
+use App\Http\Controllers\Api\UserRegisterController;
 use Illuminate\Support\Facades\Route;
+
 
 
 
@@ -133,6 +135,8 @@ use Illuminate\Support\Facades\Route;
 
 
     // mlm user profile 
+
+    Route::post('/user-register', [UserRegisterController::class, 'register']);
 
     Route::get('/profile', [ProfileController::class, 'profile']);
     Route::post('/profile/update', [ProfileController::class, 'updateProfile']);

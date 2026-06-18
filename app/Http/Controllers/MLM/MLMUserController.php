@@ -354,6 +354,7 @@ class MLMUserController extends Controller
 
   public function dashboard()
 {
+
     // 1. Holding Tank (Pending Approvals)
     $pendingApprovals = \App\Models\MLMTree::whereNull('parent_id')
         ->where('position', 'none')

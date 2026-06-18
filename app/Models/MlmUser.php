@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\MlmUserDetail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+
 class MlmUser extends Model
 {
     protected $table = 'mlm_users';
@@ -29,6 +31,11 @@ class MlmUser extends Model
         'verification_expires' => 'datetime',
     ];
 
+    public function detail()
+    {
+        return $this->hasOne(MlmUserDetail::class, 'user_id');
+    }
+    
     // 🔗 Self-referential: Sponsor (within mlm_users)
     public function sponsor(): BelongsTo
     {
