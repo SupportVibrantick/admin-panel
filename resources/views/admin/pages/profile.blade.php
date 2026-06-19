@@ -72,7 +72,7 @@
                                         <div class="col-lg-4 text-center">
                                             <div class="position-relative d-inline-block">
                                                 <img src="{{ Auth::user()->profile_photo_path
-                                                        ? Storage::url(Auth::user()->profile_photo_path)
+                                                        ? asset('storage/' . Auth::user()->profile_photo_path)
                                                         : asset('images/profile/profile.png') }}" class="rounded-circle shadow-lg border  border-white"
                                                         width="180" height="180" style="object-fit: cover;" alt="Profile">
                                                 <span
@@ -141,7 +141,7 @@
                                                 <label class="form-label fw-bold d-block">Profile Photo</label>
                                                 <div class="preview-box border rounded-3 p-4 bg-white mb-3">
                                                     <img src="{{ Auth::user()->profile_photo_path
-                                                        ? Storage::url(Auth::user()->profile_photo_path)
+                                                        ? asset('storage/' . Auth::user()->profile_photo_path)
                                                         : asset('images/profile/profile.png') }}" class="rounded-circle shadow-lg border  border-white"
                                                         width="180" height="180" style="object-fit: cover;" alt="Profile">
                                                 </div>

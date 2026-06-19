@@ -45,7 +45,7 @@
                                 $user = auth()->user();
                             @endphp
 
-                            <img src="{{ $user->profile_photo_path ? Storage::url($user->profile_photo_path) : url('images/avatar/1.png') }}"
+                            <img src="{{ $user->profile_photo_path ? asset('storage/' . $user->profile_photo_path) : url('images/avatar/1.png') }}"
                                 onerror="this.onerror=null; this.src='{{ asset('assets/images/avatar/1.png') }}';"
                                 class="rounded-circle me-2" width="40" height="40" style="object-fit: cover;"
                                 alt="{{ $user->name }}">

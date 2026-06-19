@@ -82,7 +82,7 @@
                                         <td>
                                         <td>
                                             @php
-                                                $firstImage = $product->first_image ?? ($product->images[0] ?? null);
+                                                $firstImage = $product->images[0] ?? null;
                                             @endphp
                                             @if ($firstImage)
                                                 <img src="{{ asset('storage/' . $firstImage) }}" alt="{{ $product->name }}"

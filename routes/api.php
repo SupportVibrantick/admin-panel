@@ -30,54 +30,58 @@ use App\Http\Controllers\Api\NiisqApiController;
 use App\Http\Controllers\Api\planManagementApiController;
 use App\Http\Controllers\Api\PrivacyApiController;
 use App\Http\Controllers\Api\ProductApiController;
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ShippingPolicyApiController;
 use App\Http\Controllers\Api\StaffResourcesApiController;
 use App\Http\Controllers\Api\supportCoordinationApiController;
 use App\Http\Controllers\Api\supportIndependentApiController;
-use App\Http\Controllers\Api\SystemApiController;
 
+use App\Http\Controllers\Api\SystemApiController;
 use App\Http\Controllers\Api\TeamApiController;
 use App\Http\Controllers\Api\TermsApiController;
+use App\Http\Controllers\Api\UserRegisterController;
 use Illuminate\Support\Facades\Route;
 
 
 
 
-Route::get('/ping', function () {
-    return response()->json(['status' => 'API working']);
-});
 
-Route::get('/home', [HomeApiController::class, 'index']);
-Route::get('/about-us', [AboutApiController::class, 'index']);
-Route::get('/our-commitment', [CommitmentApiController::class, 'index']);
-Route::get('/our-team', [TeamApiController::class, 'index']);
-Route::get('/privacy-policy', [PrivacyApiController::class, 'index']);
-Route::get('/terms-conditions', [TermsApiController::class, 'index']);  
-Route::get('/accessibility', [AccessibilityApiController::class, 'index']);  
-Route::get('/shipping-policy', [ShippingPolicyApiController::class, 'index']);  
-Route::get('/disclaimer', [DisclaimerApiController::class, 'index']);  
-Route::get('/cancel-policy', [CancellationApiController::class, 'index']);  
-Route::get('/grievance-redressal', [GrievanceApiController::class, 'index']);  
-Route::get('/ndis', [NdisApiController::class, 'index']);  
-Route::get('/aged-care', [AgedcareApiController::class, 'index']);  
-Route::get('/blogs', [BlogsApiController::class, 'index']);  
-Route::get('/products', [ProductApiController::class, 'index']);  
-Route::get('/niisq', [NiisqApiController::class, 'index']);  
-Route::get('/dva', [DvaApiController::class, 'index']);  
-Route::get('/client-resource', [ClientResourcesApiController::class, 'index']);  
-Route::get('/staff-resource', [StaffResourcesApiController::class, 'index']);  
-Route::get('/faqs', [FaqApiController::class, 'index']);  
-Route::get('/jobs', [CareerApiController::class, 'index']);  
-Route::get('/jobs/{slug}', [CareerApiController::class, 'show']);
-Route::get('/home-service', [HomeServiceApiController::class, 'index']);
-Route::get('/community-participation-service', [CommunityParticipationApiController::class, 'index']);
-Route::get('/support-independent-service', [supportIndependentApiController::class, 'index']);
-Route::get('/care-coordination-service', [careCoordinationApiController::class, 'index']);
-Route::get('/community-nursing-service', [communityNursingApiController::class, 'index']);
-Route::get('/allied-health-service', [alliedHealthApiController::class, 'index']);
-Route::get('/plan-management-service', [planManagementApiController::class, 'index']);
-Route::get('/support-coordination-service', [supportCoordinationApiController::class, 'index']);
-Route::get('/system-setting', [SystemApiController::class, 'index']);
+
+    Route::get('/ping', function () {
+        return response()->json(['status' => 'API working']);
+    });
+
+    Route::get('/home', [HomeApiController::class, 'index']);
+    Route::get('/about-us', [AboutApiController::class, 'index']);
+    Route::get('/our-commitment', [CommitmentApiController::class, 'index']);
+    Route::get('/our-team', [TeamApiController::class, 'index']);
+    Route::get('/privacy-policy', [PrivacyApiController::class, 'index']);
+    Route::get('/terms-conditions', [TermsApiController::class, 'index']);  
+    Route::get('/accessibility', [AccessibilityApiController::class, 'index']);  
+    Route::get('/shipping-policy', [ShippingPolicyApiController::class, 'index']);  
+    Route::get('/disclaimer', [DisclaimerApiController::class, 'index']);  
+    Route::get('/cancel-policy', [CancellationApiController::class, 'index']);  
+    Route::get('/grievance-redressal', [GrievanceApiController::class, 'index']);  
+    Route::get('/ndis', [NdisApiController::class, 'index']);  
+    Route::get('/aged-care', [AgedcareApiController::class, 'index']);  
+    Route::get('/blogs', [BlogsApiController::class, 'index']);  
+    Route::get('/products', [ProductApiController::class, 'index']);  
+    Route::get('/niisq', [NiisqApiController::class, 'index']);  
+    Route::get('/dva', [DvaApiController::class, 'index']);  
+    Route::get('/client-resource', [ClientResourcesApiController::class, 'index']);  
+    Route::get('/staff-resource', [StaffResourcesApiController::class, 'index']);  
+    Route::get('/faqs', [FaqApiController::class, 'index']);  
+    Route::get('/jobs', [CareerApiController::class, 'index']);  
+    Route::get('/jobs/{slug}', [CareerApiController::class, 'show']);
+    Route::get('/home-service', [HomeServiceApiController::class, 'index']);
+    Route::get('/community-participation-service', [CommunityParticipationApiController::class, 'index']);
+    Route::get('/support-independent-service', [supportIndependentApiController::class, 'index']);
+    Route::get('/care-coordination-service', [careCoordinationApiController::class, 'index']);
+    Route::get('/community-nursing-service', [communityNursingApiController::class, 'index']);
+    Route::get('/allied-health-service', [alliedHealthApiController::class, 'index']);
+    Route::get('/plan-management-service', [planManagementApiController::class, 'index']);
+    Route::get('/support-coordination-service', [supportCoordinationApiController::class, 'index']);
+    Route::get('/system-setting', [SystemApiController::class, 'index']);
 
 
     
@@ -127,3 +131,14 @@ Route::get('/system-setting', [SystemApiController::class, 'index']);
     Route::get('my-tickets',               [GrievanceController::class, 'myTickets']);
 
     Route::get('outbox',               [GrievanceController::class, 'outbox']);
+
+
+
+    // mlm user profile 
+
+    Route::post('/user-register', [UserRegisterController::class, 'register']);
+
+    Route::get('/profile', [ProfileController::class, 'profile']);
+    Route::post('/profile/update', [ProfileController::class, 'updateProfile']);
+    Route::post('/change-password', [ProfileController::class, 'changePassword']);
+    Route::post('profile/update-image', [ProfileController::class, 'updateImage']);

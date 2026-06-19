@@ -15,6 +15,7 @@
 /node_modules
 /public/build
 /public/hot
+/public/uploads
 /vendor
 Homestead.json
 Homestead.yaml
@@ -23,4 +24,6 @@ Thumbs.db
 .htaccess
 default.php
 public/kyc
+
+/storage/app/public/
 

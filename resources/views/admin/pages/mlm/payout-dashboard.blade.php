@@ -26,17 +26,22 @@
                 <h5 class="card-title mb-0"><i class="fas fa-users me-2"></i>Users with Payout Activity</h5>
                 <span class="badge bg-primary">{{ $usersWithPayouts->total() ?? 0 }} Users</span>
             </div>
-            <div class="card-body p-0">
+            <div class="card-body p-3">
                 <div class="table-responsive">
                     <table class="table table-hover datatable">
                         <thead class="bg-light">
                             <tr>
-                                <th>User</th><th>Sponsor</th><th>CC Balance</th>
-                                <th>Available</th><th>Total Earned</th><th>Status</th><th>Actions</th>
+                                <th>User</th>
+                                <th>Sponsor</th>
+                                <th>CC Balance</th>
+                                <th>Available</th>
+                                <th>Total Earned</th>
+                                <th>Status</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($usersWithPayouts as $user)
+                            @foreach($usersWithPayouts as $user)
                                 @php
                                     $balance = $user->payoutBalance;
                                     // Safe config values with fallbacks
@@ -72,10 +77,8 @@
                                             <i class="fas fa-eye"></i> View
                                         </button>
                                     </td>
-                                </tr>
-                            @empty
-                                <tr><td colspan="7" class="text-center py-4">No payout activity yet.</td></tr>
-                            @endforelse
+                                </tr> 
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

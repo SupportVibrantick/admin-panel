@@ -153,6 +153,7 @@
 
                         <div class="user-name">
                             ${node.first_name} ${node.last_name}
+                            <p class="small m-0">${node.user_name}</p>
                         </div>
 
                         <div class="mt-1">
@@ -197,7 +198,7 @@
                     //     title: 'Empty Slot (LS)'
                     // }
                     innerHTML: `
-                    <div class="text-center">
+                    <div class="text-center d-flex flex-column justify-content-center" style="height:127px;">
                         <i class="fas fa-user fa-2x text-muted mb-2"></i>
                         <div>Empty Slot (LS)</div>
                         </div>
@@ -216,7 +217,7 @@
                     //     title: 'Empty Slot (RS)'
                     // }
                     innerHTML: `                    
-                        <div class="text-center">
+                        <div class="text-center d-flex flex-column justify-content-center" style="height:127px;">
                             <i class="fas fa-user fa-2x text-muted mb-2 mx-auto"></i>
                             <div>Empty Slot (RS)</div>
                         </div>

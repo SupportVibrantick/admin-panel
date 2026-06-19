@@ -12,7 +12,7 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::updateOrCreate(
+       $admin = User::updateOrCreate(
             ['email' => 'admin@gmail.com'], 
             [
                 'name' => 'Admin',
@@ -22,5 +22,9 @@ class AdminUserSeeder extends Seeder
                 'password' => 'Admin@123', 
             ]
         );
+
+        $admin->assignRole('admin');
+
+
     }
 }

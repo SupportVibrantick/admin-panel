@@ -109,7 +109,7 @@ class TeamGenealogyController extends Controller
             $query->where('position', $request->position);
         }
         
-        $teamMembers = $query->paginate(20);
+        $teamMembers = $query->paginate(15);
         
         // Stats
         $downlineIds = $this->getAllDownlineIds($currentUser->id);
