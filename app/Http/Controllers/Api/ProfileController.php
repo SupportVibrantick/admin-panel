@@ -6,34 +6,28 @@ use App\Http\Controllers\Controller;
 use App\Models\MlmUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ProfileController extends Controller
 {
     public function profile(Request $request)
     {
-        $user = MlmUser::with([                
+        $user = MlmUser::with([      
+                'detail',
                 'sponsor:id,user_name,first_name,last_name'
             ])->findOrFail($request->user_id);
+
+            if ($user->detail && $user->detail->profile_image) {
+                $user->detail->profile_image = asset('storage/' . $user->detail->profile_image);
+            }else{
+                 $user->detail->profile_image = 'http://127.0.0.1:8001/assets/images/logo.webp';
+            }
 
         return response()->json([
             'status' => true,
             'message' => 'Profile fetched successfully',
-            'data' => [
-                'id' => $user->id,
-                'first_name' => $user->first_name,
-                'last_name' => $user->last_name,
-                'user_name' => $user->user_name,
-                'email' => $user->email,
-                'phone' => $user->phone,
-                'track_id' => $user->track_id,
-                'profile_image' => $user->profile_image
-                    ? asset('storage/' . $user->profile_image)
-                    : null,
-                'is_active' => $user->is_active,
-                'created_at' => $user->created_at,
-                'sponsor' => $user->sponsor,
-            ],
+            'data' => $user,
         ]);
     }
 
@@ -47,7 +41,7 @@ class ProfileController extends Controller
             'last_name' => 'required|string|max:255',
             // 'email' => 'nullable|email|unique:users,email,' . $user->id,
             'mobile' => 'nullable|string|max:15',
-            'profile_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            // 'profile_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'date_of_birth' => 'nullable|date',
             'gender' => 'nullable|in:male,female,other',
             'father_name' => 'nullable|string|max:255',
@@ -57,7 +51,7 @@ class ProfileController extends Controller
             'city' => 'nullable|string|max:100',
             'district' => 'nullable|string|max:100',
             'state' => 'nullable|string|max:100',
-            'country' => 'nullable|string|max:100',
+            'country' => 'required|string|max:100',
             'pincode' => 'nullable|string|max:10',
             'nominee_name' => 'nullable|string|max:255',
             'nominee_relation' => 'nullable|string|max:100',
@@ -80,31 +74,31 @@ class ProfileController extends Controller
             'city'             => $validated['city'] ?? null,
             'district'         => $validated['district'] ?? null,
             'state'            => $validated['state'] ?? null,
-            'country'          => $validated['country'] ?? null,
+            'country'          => $validated['country'],
             'pincode'          => $validated['pincode'] ?? null,
             'nominee_name'     => $validated['nominee_name'] ?? null,
             'nominee_relation' => $validated['nominee_relation'] ?? null,
         ];
          
 
-        if ($request->hasFile('profile_image')) {
+        // if ($request->hasFile('profile_image')) {
 
-            $file = $request->file('profile_image');
+        //     $file = $request->file('profile_image');
 
-            $filename = time() . '.' . $file->getClientOriginalExtension();
+        //     $filename = time() . '.' . $file->getClientOriginalExtension();
 
-            $path = $file->storeAs(
-                'profile_images',
-                $filename,
-                'public'
-            );
+        //     $path = $file->storeAs(
+        //         'profile_images',
+        //         $filename,
+        //         'public'
+        //     );
 
-            $detailData['profile_image'] = $path;
-        }
+        //     $detailData['profile_image'] = $path;
+        // }
 
         $user->update($userData);
         $user->detail()->updateOrCreate(
-            // ['user_id' => $user->id],
+            ['user_id' => $user->id],
             $detailData
         );
 
@@ -154,6 +148,38 @@ class ProfileController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Password updated successfully.'
+        ]);
+    }
+
+
+    public function updateImage(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:mlm_users,id',
+            'profile_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        $user = MlmUser::findOrFail($request->user_id);
+
+        // Delete old image
+        if ($user->profile_image && Storage::disk('public')->exists($user->profile_image)) {
+            Storage::disk('public')->delete($user->profile_image);
+        }
+
+        // Upload new image
+        $imagePath = $request->file('profile_image')
+            ->store('profile-images', 'public');
+
+        $user->detail()->updateOrCreate(
+            ['user_id' => $user->id],
+            ['profile_image' => $imagePath]
+        );
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Profile image updated successfully.',
+            'image_url' => asset('storage/' . $imagePath),
+            'data' => $user->profile_image
         ]);
     }
 }

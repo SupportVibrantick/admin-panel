@@ -125,7 +125,10 @@ use App\Http\Controllers\ValueController;
 use App\Http\Controllers\WebsiteSetting;
 use App\Http\Controllers\WhyChooseSectionController;
 use App\Http\Controllers\WhyPartnerController;
+use App\Models\MlmUser;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
+
 
 
 
@@ -137,6 +140,20 @@ Route::get('/', function () {
 
 
 // ALL THE ROUTES FOR BACKEND DASHBOARD
+
+    Route::get('/test-mail', function () {
+
+        Mail::raw('This is a test email from Laravel.', function ($message) {
+            $message->to('dkvis1811@gmail.com')
+                    ->subject('Test Email');
+        });
+
+        return 'Test email sent!';
+    }); 
+    Route::get('test-welcome', function () {
+        $user = MlmUser::with(['sponsor'])->find(3);
+        return view('emails.mlm-user-welcome', compact('user'));
+    }); 
 
 
 Route::get('/dashboard', [MLMUserController::class, 'dashboard'])

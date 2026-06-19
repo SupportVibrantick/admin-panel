@@ -141,3 +141,4 @@ use Illuminate\Support\Facades\Route;
     Route::get('/profile', [ProfileController::class, 'profile']);
     Route::post('/profile/update', [ProfileController::class, 'updateProfile']);
     Route::post('/change-password', [ProfileController::class, 'changePassword']);
+    Route::post('profile/update-image', [ProfileController::class, 'updateImage']);

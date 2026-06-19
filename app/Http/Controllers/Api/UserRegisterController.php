@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\MlmActivationMail;
+use App\Mail\MlmUserWelcomeMail;
 use App\Models\MlmUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Pest\Support\Str;
 
@@ -57,6 +60,9 @@ class UserRegisterController extends Controller
             'verification_token' => Str::random(60),
             'verification_expires' => now()->addHours(24),
         ]);
+        $activationUrl = route('mlm.activate', ['token' => $user->verification_token]);
+        Mail::to($user->email)->send(new MlmActivationMail($user, $activationUrl));
+        Mail::to($user->email)->send(new MlmUserWelcomeMail($user));
 
         return response()->json([
             'status' => true,
