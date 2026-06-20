@@ -26,6 +26,8 @@
             </div>
         @endif
 
+        @dump($holdingUsers->toArray())
+
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">Holding Tank List</h5>

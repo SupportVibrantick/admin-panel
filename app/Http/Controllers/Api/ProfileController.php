@@ -18,11 +18,13 @@ class ProfileController extends Controller
                 'sponsor:id,user_name,first_name,last_name'
             ])->findOrFail($request->user_id);
 
-            if ($user->detail && $user->detail->profile_image) {
-                $user->detail->profile_image = asset('storage/' . $user->detail->profile_image);
-            }else{
-                 $user->detail->profile_image = 'http://127.0.0.1:8001/assets/images/logo.webp';
+
+            if ($user->detail) {
+                $user->detail->profile_image = $user->detail->profile_image
+                    ? asset('storage/' . $user->detail->profile_image)
+                    : null;
             }
+        // return response()->json($user);
 
         return response()->json([
             'status' => true,
