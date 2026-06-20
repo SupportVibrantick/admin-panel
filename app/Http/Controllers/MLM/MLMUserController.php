@@ -132,7 +132,7 @@ class MLMUserController extends Controller
     public function holdingTank()
     {
         // ✅ Get unplaced users (EXCLUDING ROOT USER)
-        $holdingUsers = \App\Models\MLMTree::with(['mlmUser.sponsor'])
+        $holdingUsers = MLMTree::with(['mlmUser.sponsor'])
             ->whereHas('mlmUser', function ($q) {
                 $q->where('is_verified', true)
                     ->where('is_active', true);

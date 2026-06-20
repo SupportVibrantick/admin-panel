@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Mail\MlmActivationMail;
 use App\Mail\MlmUserWelcomeMail;
+use App\Models\MLMTree;
 use App\Models\MlmUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -59,6 +60,13 @@ class UserRegisterController extends Controller
             'is_deleted' => false,
             'verification_token' => Str::random(60),
             'verification_expires' => now()->addHours(24),
+        ]);
+
+        MLMTree::create([   
+            'mlm_user_id' => $user->id,
+            'parent_id' => null,
+            'position' => 'none',
+            'level' => 0,
         ]);
         $activationUrl = route('mlm.activate', ['token' => $user->verification_token]);
         Mail::to($user->email)->send(new MlmActivationMail($user, $activationUrl));
