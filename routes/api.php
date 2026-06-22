@@ -27,6 +27,7 @@ use App\Http\Controllers\Api\KycController;
 use App\Http\Controllers\Api\MLMApiController;
 use App\Http\Controllers\Api\NdisApiController;
 use App\Http\Controllers\Api\NiisqApiController;
+use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\planManagementApiController;
 use App\Http\Controllers\Api\PrivacyApiController;
 use App\Http\Controllers\Api\ProductApiController;
@@ -34,13 +35,14 @@ use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ShippingPolicyApiController;
 use App\Http\Controllers\Api\StaffResourcesApiController;
 use App\Http\Controllers\Api\supportCoordinationApiController;
-use App\Http\Controllers\Api\supportIndependentApiController;
 
+use App\Http\Controllers\Api\supportIndependentApiController;
 use App\Http\Controllers\Api\SystemApiController;
 use App\Http\Controllers\Api\TeamApiController;
 use App\Http\Controllers\Api\TermsApiController;
 use App\Http\Controllers\Api\UserRegisterController;
 use Illuminate\Support\Facades\Route;
+
 
 
 
@@ -131,8 +133,9 @@ use Illuminate\Support\Facades\Route;
     Route::get('my-tickets',               [GrievanceController::class, 'myTickets']);
 
     Route::get('outbox',               [GrievanceController::class, 'outbox']);
-
-
+    
+    
+    Route::get('order-history',               [OrderController::class, 'history']);
 
     // mlm user profile 
 
