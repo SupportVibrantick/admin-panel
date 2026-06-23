@@ -17,27 +17,43 @@ class MLMApiController extends Controller
      */
     public function getReferrals(Request $request)
     {
-        // ✅ FIX: Get user from request parameter instead of Auth
-        $user = MlmUser::find($request->user_id);
-        if (!$user) return response()->json(['success' => false, 'message' => 'Invalid user_id provided'], 400);
+        $request->validate([
+            'user_id'  => 'required|exists:mlm_users,id',
+            'per_page' => 'nullable|integer|min:1|max:100',
+        ]);
 
-        $referrals = MlmUser::where('sponsor_id', $user->id)
-            ->where('is_deleted', false)
+        $user = MlmUser::find($request->user_id);
+
+        $baseQuery = MlmUser::query()
+            ->with(['detail'])
+            ->withSum('userOrder as self_cc', 'total_cc_points')
+            ->where('sponsor_id', $user->id)
+            ->where('is_deleted', false);
+
+        $referrals = (clone $baseQuery)
             ->with('payoutBalance')
-            ->orderBy('created_at', 'desc')
-            ->paginate($request->get('per_page', 12));
+            ->latest()
+            ->paginate($request->input('per_page', 12));
 
         $stats = [
-            'total' => MlmUser::where('sponsor_id', $user->id)->where('is_deleted', false)->count(),
-            'active' => MlmUser::where('sponsor_id', $user->id)->where('is_active', true)->where('is_deleted', false)->count(),
-            'total_cc' => MlmUser::where('sponsor_id', $user->id)
-                ->where('is_deleted', false)
+            'total' => (clone $baseQuery)->count(),
+
+            'active' => (clone $baseQuery)
+                ->where('is_active', true)
+                ->count(),
+
+            'total_cc' => (clone $baseQuery)
                 ->withSum('payoutBalance', 'cc_balance')
                 ->get()
                 ->sum('payout_balance_sum_cc_balance'),
         ];
 
-        return response()->json(['success' => true, 'referrals' => $referrals, 'stats' => $stats]);
+        return response()->json([
+            'success'   => true,
+            'message'   => 'Referrals fetched successfully.',
+            'referrals' => $referrals,
+            'stats'     => $stats,
+        ]);
     }
 
     /**

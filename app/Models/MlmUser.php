@@ -106,4 +106,8 @@ public function payoutTransactions()
 {
     return $this->hasMany(\App\Models\PayoutTransaction::class, 'mlm_user_id');
 }
+public function userOrder()
+{
+    return $this->hasMany(\App\Models\Order::class, 'user_id');
+}
 }
