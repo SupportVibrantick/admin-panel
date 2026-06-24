@@ -15,10 +15,11 @@
         <div class="card">
             <div class="card-header bg-white d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">Wallets</h5>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createWalletModal">
+                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createWalletModal">
                     <i class="fas fa-plus me-1"></i> Create New Wallet
                 </button>
             </div>
+            {{-- @dump($wallets->toArray()) --}}
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-hover">
@@ -38,16 +39,16 @@
                                 <tr>
                                     <td><input type="checkbox" class="form-check-input"></td>
                                    <td>
-    <div class="d-flex align-items-center">
-        <div>
-            <!-- ✅ Safe access with null coalescing -->
-            <strong>{{ $wallet->name ?? 'N/A' }}</strong>
-            <small class="d-block text-muted">
-                Created {{ $wallet->created_at?->format('d M Y H:i') ?? 'N/A' }}
-            </small>
-        </div>
-    </div>
-</td>
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <!-- ✅ Safe access with null coalescing -->
+                                                <strong>{{ $wallet->name ?? 'N/A' }}</strong>
+                                                <small class="d-block text-muted">
+                                                    Created {{ $wallet->created_at?->format('d M Y H:i') ?? 'N/A' }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </td>
                                     <td><span class="badge bg-light text-dark">{{ $wallet->code }}</span></td>
                                     <td>{{ str_replace('_', ' ', $wallet->eligibility) }}</td>
                                     <td><strong>{{ $wallet->currency_code }}</strong></td>
@@ -96,12 +97,12 @@
                                                         </a>
                                                     </li>
                                                     <li>
-    <a class="dropdown-item" href="#" 
-       data-bs-toggle="modal" 
-       data-bs-target="#removeUserModal{{ $wallet->id }}">
-        <i class="fas fa-user-times me-2"></i> Remove User
-    </a>
-</li>
+                                                        <a class="dropdown-item" href="#" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#removeUserModal{{ $wallet->id }}">
+                                                            <i class="fas fa-user-times me-2"></i> Remove User
+                                                        </a>
+                                                    </li>
                                                     <li>
                                                         <a class="dropdown-item" href="#" 
                                                            data-bs-toggle="modal" 
@@ -365,136 +366,136 @@
                                 </div>
                                 
                                <!-- Assign User Modal -->
-<div class="modal fade" id="assignUserModal{{ $wallet->id }}" tabindex="-1">
-    <div class="modal-dialog">
-        <form action="{{ route('wallets.assign-user', $wallet) }}" method="POST">
-            @csrf
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Assign User to Wallet</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">Select User *</label>
-                        <select name="user_id" class="form-select" required>
-                            <option value="">Choose a user...</option>
-                            @foreach(\App\Models\MlmUser::where('is_deleted', false)->orderBy('user_name')->get() as $user)
-                                @php
-                                    $isAssigned = $wallet->balances()
-                                        ->where('user_id', $user->id)
-                                        ->exists();
-                                @endphp
-                                <option value="{{ $user->id }}" 
-                                        {{ $isAssigned ? 'disabled' : '' }}>
-                                    {{ $user->user_name }} - {{ $user->first_name }} {{ $user->last_name }}
-                                    {{ $isAssigned ? '(Already Assigned)' : '' }}
-                                </option>
-                            @endforeach
-                        </select>
-                        <small class="text-muted">
-                            Disabled users are already assigned to this wallet.
-                        </small>
-                    </div>
-                    
-                    <!-- Show Already Assigned Users -->
-                    @if($wallet->balances()->count() > 0)
-                        <div class="alert alert-info mt-3">
-                            <h6 class="mb-2"><i class="fas fa-info-circle me-2"></i>Already Assigned Users:</h6>
-                            <ul class="mb-0">
-                                @foreach($wallet->balances()->with('user')->get() as $balance)
-                                    @if($balance->user)
-                                        <li>
-                                            <strong>{{ $balance->user->user_name }}</strong> 
-                                            - {{ $balance->user->first_name }} {{ $balance->user->last_name }}
-                                            <span class="badge bg-success ms-2">Balance: ₹{{ number_format($balance->balance, 2) }}</span>
-                                        </li>
-                                    @endif
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-                    
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>
-                        This will create a wallet balance entry for the selected user.
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Assign User</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-                                <!-- Remove User Modal -->
-<div class="modal fade" id="removeUserModal{{ $wallet->id }}" tabindex="-1">
-    <div class="modal-dialog">
-        <form action="{{ route('wallets.remove-user', $wallet) }}" method="POST">
-            @csrf
-            @method('DELETE')
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title">
-                        <i class="fas fa-user-times me-2"></i>Remove User from Wallet
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    @if($wallet->balances()->count() > 0)
-                        <div class="alert alert-warning">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
-                            <strong>Warning:</strong> Removing a user will delete their wallet balance entry. Make sure the balance is zero before removing!
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Select User to Remove *</label>
-                            <select name="user_id" class="form-select" required>
-                                <option value="">Choose a user...</option>
-                                @foreach($wallet->balances()->with('user')->get() as $balance)
-                                    @if($balance->user)
-                                        <option value="{{ $balance->user->id }}">
-                                            {{ $balance->user->user_name }} - {{ $balance->user->first_name }} {{ $balance->user->last_name }}
-                                            (Balance: ₹{{ number_format($balance->balance, 2) }})
-                                        </option>
-                                    @endif
-                                @endforeach
-                            </select>
-                        </div>
-                        
-                        <div class="alert alert-info">
-                            <h6 class="mb-2">Current Wallet Balances:</h6>
-                            <ul class="mb-0">
-                                @foreach($wallet->balances()->with('user')->get() as $balance)
-                                    @if($balance->user)
-                                        <li>
-                                            <strong>{{ $balance->user->user_name }}</strong> 
-                                            - Balance: <span class="{{ $balance->balance > 0 ? 'text-danger' : 'text-success' }}">
-                                                ₹{{ number_format($balance->balance, 2) }}
-                                            </span>
-                                        </li>
-                                    @endif
-                                @endforeach
-                            </ul>
-                        </div>
-                    @else
-                        <div class="alert alert-info text-center">
-                            <i class="fas fa-info-circle me-2"></i>
-                            No users assigned to this wallet yet.
-                        </div>
-                    @endif
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-danger" {{ $wallet->balances()->count() == 0 ? 'disabled' : '' }}>
-                        <i class="fas fa-user-times me-1"></i> Remove User
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
+                                <div class="modal fade" id="assignUserModal{{ $wallet->id }}" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <form action="{{ route('wallets.assign-user', $wallet) }}" method="POST">
+                                            @csrf
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Assign User to Wallet</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Select User *</label>
+                                                        <select name="user_id" class="form-select" required>
+                                                            <option value="">Choose a user...</option>
+                                                            @foreach(\App\Models\MlmUser::where('is_deleted', false)->orderBy('user_name')->get() as $user)
+                                                                @php
+                                                                    $isAssigned = $wallet->balances()
+                                                                        ->where('user_id', $user->id)
+                                                                        ->exists();
+                                                                @endphp
+                                                                <option value="{{ $user->id }}" 
+                                                                        {{ $isAssigned ? 'disabled' : '' }}>
+                                                                    {{ $user->user_name }} - {{ $user->first_name }} {{ $user->last_name }}
+                                                                    {{ $isAssigned ? '(Already Assigned)' : '' }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                        <small class="text-muted">
+                                                            Disabled users are already assigned to this wallet.
+                                                        </small>
+                                                    </div>
+                                                    
+                                                    <!-- Show Already Assigned Users -->
+                                                    @if($wallet->balances()->count() > 0)
+                                                        <div class="alert alert-info mt-3">
+                                                            <h6 class="mb-2"><i class="fas fa-info-circle me-2"></i>Already Assigned Users:</h6>
+                                                            <ul class="mb-0">
+                                                                @foreach($wallet->balances()->with('user')->get() as $balance)
+                                                                    @if($balance->user)
+                                                                        <li>
+                                                                            <strong>{{ $balance->user->user_name }}</strong> 
+                                                                            - {{ $balance->user->first_name }} {{ $balance->user->last_name }}
+                                                                            <span class="badge bg-success ms-2">Balance: ₹{{ number_format($balance->balance, 2) }}</span>
+                                                                        </li>
+                                                                    @endif
+                                                                @endforeach
+                                                            </ul>
+                                                        </div>
+                                                    @endif
+                                                    
+                                                    <div class="alert alert-info">
+                                                        <i class="fas fa-info-circle me-2"></i>
+                                                        This will create a wallet balance entry for the selected user.
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="btn btn-primary">Assign User</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                                                <!-- Remove User Modal -->
+                                <div class="modal fade" id="removeUserModal{{ $wallet->id }}" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <form action="{{ route('wallets.remove-user', $wallet) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-danger text-white">
+                                                    <h5 class="modal-title">
+                                                        <i class="fas fa-user-times me-2"></i>Remove User from Wallet
+                                                    </h5>
+                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    @if($wallet->balances()->count() > 0)
+                                                        <div class="alert alert-warning">
+                                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                                            <strong>Warning:</strong> Removing a user will delete their wallet balance entry. Make sure the balance is zero before removing!
+                                                        </div>
+                                                        
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Select User to Remove *</label>
+                                                            <select name="user_id" class="form-select" required>
+                                                                <option value="">Choose a user...</option>
+                                                                @foreach($wallet->balances()->with('user')->get() as $balance)
+                                                                    @if($balance->user)
+                                                                        <option value="{{ $balance->user->id }}">
+                                                                            {{ $balance->user->user_name }} - {{ $balance->user->first_name }} {{ $balance->user->last_name }}
+                                                                            (Balance: ₹{{ number_format($balance->balance, 2) }})
+                                                                        </option>
+                                                                    @endif
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        
+                                                        <div class="alert alert-info">
+                                                            <h6 class="mb-2">Current Wallet Balances:</h6>
+                                                            <ul class="mb-0">
+                                                                @foreach($wallet->balances()->with('user')->get() as $balance)
+                                                                    @if($balance->user)
+                                                                        <li>
+                                                                            <strong>{{ $balance->user->user_name }}</strong> 
+                                                                            - Balance: <span class="{{ $balance->balance > 0 ? 'text-danger' : 'text-success' }}">
+                                                                                ₹{{ number_format($balance->balance, 2) }}
+                                                                            </span>
+                                                                        </li>
+                                                                    @endif
+                                                                @endforeach
+                                                            </ul>
+                                                        </div>
+                                                    @else
+                                                        <div class="alert alert-info text-center">
+                                                            <i class="fas fa-info-circle me-2"></i>
+                                                            No users assigned to this wallet yet.
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="btn btn-danger" {{ $wallet->balances()->count() == 0 ? 'disabled' : '' }}>
+                                                        <i class="fas fa-user-times me-1"></i> Remove User
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
                             @empty
                                 <tr>
                                     <td colspan="7" class="text-center py-4 text-muted">

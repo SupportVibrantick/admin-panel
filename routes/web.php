@@ -160,6 +160,8 @@ Route::get('/dashboard', [MLMUserController::class, 'dashboard'])
     ->middleware('auth')
     ->name('dashboard');
 
+Route::get('/activate/{token}', [MLMUserController::class, 'activate'])->name('mlm.activate');
+
 Route::middleware('auth')->group(function () {
 
     // ────────────── Product Details ──────────────
