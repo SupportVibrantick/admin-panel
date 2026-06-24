@@ -21,6 +21,16 @@ class Order extends Model
         'note',
     ];
 
+    public const STATUS_PENDING = 'PENDING';
+    public const STATUS_COMPLETED = 'COMPLETED';
+    public const STATUS_CANCELLED = 'CANCELLED';
+
+    public const TYPE_SELF = 'SELF';
+    public const TYPE_ADMIN = 'ADMIN';
+
+    public const PAYMENT_WALLET = 'WALLET';
+    public const PAYMENT_CASH = 'CASH';
+
     protected $casts = [
         'total_amount' => 'decimal:2',
         'total_cc_points' => 'decimal:2',

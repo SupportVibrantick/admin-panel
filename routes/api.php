@@ -41,7 +41,9 @@ use App\Http\Controllers\Api\SystemApiController;
 use App\Http\Controllers\Api\TeamApiController;
 use App\Http\Controllers\Api\TermsApiController;
 use App\Http\Controllers\Api\UserRegisterController;
+use App\Http\Controllers\Api\WalletController;
 use Illuminate\Support\Facades\Route;
+
 
 
 
@@ -135,7 +137,12 @@ use Illuminate\Support\Facades\Route;
     Route::get('outbox',               [GrievanceController::class, 'outbox']);
     
     
+    Route::post('purchase',               [OrderController::class, 'purchase']);
     Route::get('order-history',               [OrderController::class, 'history']);
+    
+    Route::get('direct-income',               [WalletController::class, 'directIncome']);
+    Route::get('matching-income',               [WalletController::class, 'matchingIncome']);
+
 
     // mlm user profile 
 
