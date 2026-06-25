@@ -14,9 +14,10 @@
             </div>
 
             <!-- Header -->
-            <div class="form-head d-flex mb-3 align-items-start">
-                <div class="me-auto">
-                    <button class="btn btn-primary btn-rounded" data-bs-toggle="modal" data-bs-target="#addUserModal">
+            <div class="form-head d-flex mb-3 align-items-start justify-content-between">
+                <div class="filter"></div>
+                <div class="ml-auto">
+                    <button class="btn btn-primary btn-rounded btn-sm" data-bs-toggle="modal" data-bs-target="#addUserModal">
                         + Add Customer
                     </button>
                 </div>
