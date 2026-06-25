@@ -20,9 +20,7 @@ class UserRegisterController extends Controller
 
     public function register(Request $request)
     {
-        // return response()->json($request->all());
-
-       
+        // return response()->json($request->all());       
 
         $validator = Validator::make($request->all(), [
             'user_name'         => 'required|string|max:50|unique:mlm_users,user_name',
@@ -31,6 +29,7 @@ class UserRegisterController extends Controller
             'last_name'        => 'required|string|max:100',
             'email'            => 'required|email|unique:mlm_users,email',
             'phone'            => 'required|string|max:15|unique:mlm_users,phone',
+            'date_of_birth'    => 'required|date',
             'pan_number' => [
                 'required',
                 'regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/',
@@ -85,6 +84,7 @@ class UserRegisterController extends Controller
 
         $user->detail()->create([
             'pan_number'      => strtoupper($request->pan_number),
+            'date_of_birth'      => strtoupper($request->date_of_birth),
             'address_line_1'  => $request->address_line_1,
             'address_line_2'  => $request->address_line_2,
             'city'            => $request->city,
