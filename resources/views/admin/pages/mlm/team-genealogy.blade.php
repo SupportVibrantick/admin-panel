@@ -2,7 +2,9 @@
 
 @section('title', 'Team Genealogy')    
 
-{{-- @dump($treeData) --}}
+@if(request('seeTree'))
+    @dump($treeData)
+@endif
 @section('content')
     <div class="content-body">
         <div class="container-fluid">
