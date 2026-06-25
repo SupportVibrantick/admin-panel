@@ -280,9 +280,9 @@ class MLMApiController extends Controller
     // 🔒 PRIVATE HELPER METHODS (Tree Logic)
     // ==========================================
 
-    private function buildTreeStructure($treeNode, $depth = 0, $maxDepth = 10)
+    private function buildTreeStructure($treeNode, $isViewRoot = true)
     {
-        if (!$treeNode || $depth > $maxDepth) return null;
+        if (!$treeNode) return null;
         $user = $treeNode->mlmUser;
         
         $leftChild = $treeNode->leftChild ? 
@@ -303,9 +303,9 @@ class MLMApiController extends Controller
             'id' => $treeNode->id, 'user_id' => $user->id, 'user_name' => $user->user_name,
             'first_name' => $user->first_name, 'last_name' => $user->last_name, 'email' => $user->email,
             'position' => $treeNode->position, 'level' => $treeNode->level, 'is_active' => $user->is_active,
-            'is_root' => $depth === 0, 'cc_balance' => $user->payoutBalance?->cc_balance ?? 0,
-            'left' => $leftChild ? $this->buildTreeStructure($leftChild, $depth + 1, $maxDepth) : null,
-            'right' => $rightChild ? $this->buildTreeStructure($rightChild, $depth + 1, $maxDepth) : null,
+            'is_root' => $isViewRoot, 'cc_balance' => $user->payoutBalance?->cc_balance ?? 0,
+            'left' => $leftChild ? $this->buildTreeStructure($leftChild, false) : null,
+            'right' => $rightChild ? $this->buildTreeStructure($rightChild, false) : null,
         ];
     }
 
@@ -336,7 +336,7 @@ class MLMApiController extends Controller
         ];
     }
 
-    private function getAllDownlineIds($userId, $maxLevel = 10) {
+    private function getAllDownlineIds($userId, $maxLevel = 100) {
         $ids = [$userId];
         $this->collectDownlineIds($userId, $ids, 0, $maxLevel);
         return array_unique($ids);
@@ -353,7 +353,7 @@ class MLMApiController extends Controller
         }
     }
 
-    private function countDownline($userId, $maxLevel = 10) {
+    private function countDownline($userId, $maxLevel = 100) {
         if (!$userId) return 0;
         $count = 0;
         $this->collectDownlineCount($userId, $count, 0, $maxLevel);

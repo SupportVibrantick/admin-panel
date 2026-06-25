@@ -11,15 +11,14 @@ use Illuminate\Support\Facades\Log;
 
 class TeamGenealogyController extends Controller
 {
-    private function buildTreeStructure($treeNode, $depth = 0, $maxDepth = 10)
+    private function buildTreeStructure($treeNode, $isViewRoot = true)
     {
-        if (!$treeNode || $depth > $maxDepth) {
+        if (!$treeNode) {
             return null;
         }
         
         $user = $treeNode->mlmUser;
         
-        // ✅ Load children WITH their children (recursive eager loading)
         $leftChild = $treeNode->leftChild ? 
             MLMTree::where('id', $treeNode->leftChild->id)
                 ->with(['leftChild.mlmUser', 'rightChild.mlmUser', 
@@ -44,10 +43,10 @@ class TeamGenealogyController extends Controller
             'position' => $treeNode->position,
             'level' => $treeNode->level,
             'is_active' => $user->is_active,
-            'is_root' => $depth === 0,
+            'is_root' => $isViewRoot,
             'cc_balance' => $user->payoutBalance?->cc_balance ?? 0,
-            'left' => $leftChild ? $this->buildTreeStructure($leftChild, $depth + 1, $maxDepth) : null,
-            'right' => $rightChild ? $this->buildTreeStructure($rightChild, $depth + 1, $maxDepth) : null,
+            'left' => $leftChild ? $this->buildTreeStructure($leftChild, false) : null,
+            'right' => $rightChild ? $this->buildTreeStructure($rightChild, false) : null,
         ];
     }
    /**
@@ -57,18 +56,12 @@ class TeamGenealogyController extends Controller
     {
         $currentUser = Auth::user();
         
-        // Get root user (Founder01 or current user)
-        if ($currentUser->user_name === 'Founder01') {
-            $rootUser = $currentUser;
-        } else {
-            $rootUser = $currentUser;
-        }
+        $rootUser = MlmUser::find(1);
         
         $rootTree = MLMTree::where('mlm_user_id', $rootUser->id)
             ->with(['leftChild.mlmUser', 'rightChild.mlmUser'])
             ->first();
         
-        // Build tree structure
         $treeData = $this->buildTreeStructure($rootTree);
         
         return view('admin.pages.mlm.team-genealogy', compact('treeData', 'rootUser'));
@@ -214,20 +207,19 @@ class TeamGenealogyController extends Controller
     /**
      * Build binary tree structure recursively
      */
-    private function buildBinaryTree($userId, $depth = 0, $maxDepth = 5)
+    private function buildBinaryTree($userId)
     {
-        if ($depth > $maxDepth) return null;
-        
-        $user = MlmUser::with(['tree', 'payoutBalance'])->findOrFail($userId);
+        $user = MlmUser::with(['tree', 'payoutBalance'])->find($userId);
+        if (!$user) return null;
         $tree = $user->tree;
+        if (!$tree) return null;
         
-        // Get left and right children from MLMTree
-        $leftChild = MLMTree::where('parent_id', $tree?->id)
+        $leftChild = MLMTree::where('parent_id', $tree->id)
             ->where('position', 'left')
             ->with('mlmUser')
             ->first();
         
-        $rightChild = MLMTree::where('parent_id', $tree?->id)
+        $rightChild = MLMTree::where('parent_id', $tree->id)
             ->where('position', 'right')
             ->with('mlmUser')
             ->first();
@@ -235,18 +227,18 @@ class TeamGenealogyController extends Controller
         return [
             'user' => $user,
             'tree' => $tree,
-            'level' => $tree?->level ?? 0,
-            'position' => $tree?->position ?? 'root',
+            'level' => $tree->level,
+            'position' => $tree->position,
             'cc_balance' => $user->payoutBalance?->cc_balance ?? 0,
-            'left' => $leftChild ? $this->buildBinaryTree($leftChild->mlm_user_id, $depth + 1, $maxDepth) : null,
-            'right' => $rightChild ? $this->buildBinaryTree($rightChild->mlm_user_id, $depth + 1, $maxDepth) : null,
+            'left' => $leftChild ? $this->buildBinaryTree($leftChild->mlm_user_id) : null,
+            'right' => $rightChild ? $this->buildBinaryTree($rightChild->mlm_user_id) : null,
         ];
     }
     
     /**
      * Get all downline user IDs (for queries)
      */
-    private function getAllDownlineIds($userId, $maxLevel = 10)
+    private function getAllDownlineIds($userId, $maxLevel = 100)
     {
         $ids = [$userId];
         $this->collectDownlineIds($userId, $ids, 0, $maxLevel);
@@ -349,7 +341,7 @@ public function userProfile($userId)
 /**
  * Count total downline for a user
  */
-private function countDownline($userId, $maxLevel = 10)
+private function countDownline($userId, $maxLevel = 100)
 {
     if (!$userId) return 0;
     
@@ -382,20 +374,16 @@ public function showUserDownline($userId)
 {
     $currentUser = Auth::user();
     
-    // ✅ Define $rootUser (same logic as genealogyView)
-    $rootUser = ($currentUser->user_name === 'Founder01') ? $currentUser : $currentUser;
+    $rootUser = MlmUser::find(1);
     
     $selectedUser = MlmUser::findOrFail($userId);
     
-    // Get the tree node for selected user
     $rootTree = MLMTree::where('mlm_user_id', $userId)
         ->with(['leftChild.mlmUser', 'rightChild.mlmUser'])
         ->first();
     
-    // Build tree structure starting from this user
     $treeData = $this->buildTreeStructure($rootTree);
     
-    // ✅ Now all variables are defined before compact()
     return view('admin.pages.mlm.team-genealogy', compact('treeData', 'rootUser', 'selectedUser'));
 }
 /**
