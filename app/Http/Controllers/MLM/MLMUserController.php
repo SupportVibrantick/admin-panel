@@ -202,7 +202,7 @@ class MLMUserController extends Controller
 
             // ✅ Parent Tree Node Fetch
             $parentTree = \App\Models\MLMTree::where('mlm_user_id', $validated['parent_id'])->firstOrFail();
-            if ($parentTree->parent_id === null) {
+            if ($parentTree->parent_id === null && $parentTree->mlm_user_id != 1) {
                 throw new \Exception('The selected sponsor has not been positioned in the MLM tree yet.');
             }
 
@@ -235,6 +235,7 @@ class MLMUserController extends Controller
             return back()->withErrors(['error' => $e->getMessage()]);
         }
     }
+    
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
