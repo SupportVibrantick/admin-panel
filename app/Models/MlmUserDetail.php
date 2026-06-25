@@ -10,6 +10,8 @@ class MlmUserDetail extends Model
 
     protected $fillable = [
         'user_id',
+        'pan_number',
+        'aadhaar_number',
         'date_of_birth',
         'gender',
         'father_name',
