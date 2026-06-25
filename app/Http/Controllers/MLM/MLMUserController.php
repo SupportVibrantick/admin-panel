@@ -246,15 +246,20 @@ class MLMUserController extends Controller
             'is_verified' => 'nullable|boolean',
             'password' => 'nullable|string|min:8|confirmed',
             'commission_percentage' => 'sometimes|nullable|in:10,12,14,16,18,20',
+            'sponsor_username' => 'required|string|exists:mlm_users,user_name',
         ]);
 
         $mlmUser = MlmUser::findOrFail($id);
+
+        $sponsor = MlmUser::where('user_name', $validated['sponsor_username'])
+                ->where('is_active', true)->where('is_deleted', false)->firstOrFail();
 
         $updateData = [
             'first_name' => $validated['first_name'],
             'last_name' => $validated['last_name'] ?? null,
             'email' => $validated['email'],
             'phone' => $validated['phone'],
+            'sponsor_id' => $sponsor->id,
             'is_active' => $validated['is_active'] ?? $mlmUser->is_active,
             'is_verified' => $validated['is_verified'] ?? $mlmUser->is_verified,
             'commission_percentage' => $validated['commission_percentage'],
